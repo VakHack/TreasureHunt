@@ -35,5 +35,12 @@ public class LoginScreen extends AppCompatActivity {
 
             }
         });
+
+        gameCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }
