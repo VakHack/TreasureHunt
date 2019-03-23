@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "628035021765",
+    "firebase_url": "https://treasurehunt-a3253.firebaseio.com",
+    "project_id": "treasurehunt-a3253",
+    "storage_bucket": "treasurehunt-a3253.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628035021765:android:d5d74f4375f45318",
+        "android_client_info": {
+          "package_name": "com.example.roees.treasurehunt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628035021765-7n7ilofn32c2jpqrrorf015kam4qvo8s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdranQZSnWH5rbpDCexFArK9s2ZtUcWUE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
