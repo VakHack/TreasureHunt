@@ -21,6 +21,7 @@
             tools:ignore="HardcodedText" />
 
         <EditText
+            android:id="@+id/gameCode"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="150dp"/>
