@@ -7,4 +7,7 @@ public class HebrewImp implements LanguageImp{
     public String JoinGame(){
         return "הצטרף למשחק";
     }
+    public String InstructorEntrance(){
+        return "כניסת מפעיל";
+    }
 }
