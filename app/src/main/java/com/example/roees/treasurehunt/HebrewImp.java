@@ -10,4 +10,7 @@ public class HebrewImp implements LanguageImp{
     public String InstructorEntrance(){
         return "כניסת מפעיל";
     }
+    public String EnterGameCode() {
+        return "הכנס קוד משחק";
+    }
 }

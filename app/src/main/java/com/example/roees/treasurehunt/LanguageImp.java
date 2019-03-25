@@ -4,4 +4,5 @@ public abstract interface LanguageImp {
     public String CreateGame();
     public String JoinGame();
     public String InstructorEntrance();
+    public String EnterGameCode();
 }
