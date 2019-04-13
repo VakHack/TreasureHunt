@@ -7,9 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class LoginScreen extends AppCompatActivity {
+public class WelcomeScreen extends AppCompatActivity {
 
-    LanguageImp languageImp = new HebrewImp();
     Button joinGame;
     Button instructor;
     EditText gameCode;
@@ -20,15 +19,15 @@ public class LoginScreen extends AppCompatActivity {
         setContentView(R.layout.activity_login_screen);
 
         joinGame = findViewById(R.id.joinGame);
-        joinGame.setText(languageImp.JoinGame());
+        joinGame.setText(HebrewImp.getInstance().joinGame());
 
         instructor = findViewById(R.id.instructorEntrance);
-        instructor.setText(languageImp.InstructorEntrance());
+        instructor.setText(HebrewImp.getInstance().instructorEntrance());
 
         gameCode = findViewById(R.id.gameCode);
-        gameCode.setHint(languageImp.EnterGameCode());
+        gameCode.setHint(HebrewImp.getInstance().enterGameCode());
 
-        final Intent instructorScreen = new Intent(LoginScreen.this, InstructorScreen.class);
+        final Intent instructorScreen = new Intent(WelcomeScreen.this, InstructorLogin.class);
 
         instructor.setOnClickListener(new View.OnClickListener() {
             @Override

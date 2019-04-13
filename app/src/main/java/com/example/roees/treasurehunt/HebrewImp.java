@@ -1,34 +1,52 @@
 package com.example.roees.treasurehunt;
 
 public class HebrewImp implements LanguageImp {
+    private static final HebrewImp ourInstance = new HebrewImp();
+
+    public static HebrewImp getInstance() {
+        return ourInstance;
+    }
+
+    private HebrewImp() {
+    }
     @Override
-    public String CreateGame() {
+    public String createGame() {
         return "צור משחק";
     }
     @Override
-    public String JoinGame() {
+    public String joinGame() {
         return "הצטרף למשחק";
     }
     @Override
-    public String InstructorEntrance() {
+    public String instructorEntrance() {
         return "כניסת מפעיל";
     }
     @Override
-    public String EnterGameCode() {
+    public String enterGameCode() {
         return "הכנס קוד משחק";
     }
-
     @Override
-    public String EnterPassword() {
+    public String enterPassword() {
         return "הכנס סיסמא";
     }
     @Override
-    public String EnterEmail() {
+    public String enterEmail() {
         return "הכנס אימייל";
     }
-
     @Override
-    public String Submit() {
+    public String submit() {
         return "כניסה";
+    }
+    @Override
+    public String alreadyLogged() {
+        return "כבר התחברת";
+    }
+    @Override
+    public String successfullyLoggedIn() {
+        return "התחברת בהצלחה!";
+    }
+    @Override
+    public String successfullyRegistered() {
+        return "רישום בוצע בהצלחה!";
     }
 }
