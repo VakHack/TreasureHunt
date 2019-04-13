@@ -5,4 +5,7 @@ public abstract interface LanguageImp {
     public String JoinGame();
     public String InstructorEntrance();
     public String EnterGameCode();
+    public String EnterPassword();
+    public String EnterEmail();
+    public String Submit();
 }
