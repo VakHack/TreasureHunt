@@ -51,4 +51,8 @@ public class HebrewImp implements LanguageImp {
     public String successfullyRegistered() {
         return "רישום בוצע בהצלחה!";
     }
+    @Override
+    public String addNewRiddle() {
+        return "הכנס חידה כאן";
+    }
 }

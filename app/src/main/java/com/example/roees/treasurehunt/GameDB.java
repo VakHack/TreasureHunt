@@ -1,8 +1,12 @@
 package com.example.roees.treasurehunt;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Map;
+
 public interface GameDB {
-    public RiddlesNCoordinates joinGame(String instructorEmail);
+    public String joinGame(String instructorEmail);
     public String instructorEntrance(String instructorEmail, String instructorPassword);
-    public String createGame(RiddlesNCoordinates riddlesNCoordinates);
-    public String editGame(RiddlesNCoordinates riddlesNCoordinates);
+    public String createGame(Map<LatLng, String> riddlesNCoordinates);
+    public String editGame(Map<LatLng, String> riddlesNCoordinates);
 }

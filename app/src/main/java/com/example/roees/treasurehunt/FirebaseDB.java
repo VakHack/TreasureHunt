@@ -3,21 +3,25 @@ package com.example.roees.treasurehunt;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Map;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class FirebaseDB implements GameDB {
     private FirebaseServerHandler fb;
-    private String email;
-    private String password;
+    private java.lang.String email;
+    private java.lang.String password;
     private boolean isLogged = false;
 
     private SharedPreferences appMap;
     private SharedPreferences.Editor appMapEditor;
-    private String LOGGED_IN_CLOUD = "LOGGED_IN";
-    private String USER_PASSWORD = "USER_PASSWORD";
-    private String USERNAME = "USERNAME";
-    private String IS_INSTRUCTOR = "IS_INSTRUCTOR";
-    private String SHARED_PREFS = "SHARED_PREFS";
+    private java.lang.String LOGGED_IN_CLOUD = "LOGGED_IN";
+    private java.lang.String USER_PASSWORD = "USER_PASSWORD";
+    private java.lang.String USERNAME = "USERNAME";
+    private java.lang.String IS_INSTRUCTOR = "IS_INSTRUCTOR";
+    private java.lang.String SHARED_PREFS = "SHARED_PREFS";
 
     private Context appContext;
 
@@ -52,11 +56,11 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public RiddlesNCoordinates joinGame(String instructorEmail) {
+    public String joinGame(java.lang.String instructorEmail) {
         return null;
     }
     @Override
-    public String instructorEntrance(String instructorEmail, String instructorPassword) {
+    public String instructorEntrance(java.lang.String instructorEmail, java.lang.String instructorPassword) {
         if(isLogged) return HebrewImp.getInstance().alreadyLogged();
 
         email = instructorEmail;
@@ -73,12 +77,12 @@ public class FirebaseDB implements GameDB {
         }else return fb.getLogFeedback();
     }
     @Override
-    public String createGame(RiddlesNCoordinates riddlesNCoordinates) {
-        return "";
+    public String createGame(Map<LatLng, String> riddlesNCoordinates) {
+        return null;
     }
     @Override
-    public String editGame(RiddlesNCoordinates riddlesNCoordinates) {
-        return "";
+    public String editGame(Map<LatLng, String> riddlesNCoordinates) {
+        return null;
     }
     public String logFeedback(){ return fb.getLogFeedback();}
     public boolean isLogged() {return isLogged;}

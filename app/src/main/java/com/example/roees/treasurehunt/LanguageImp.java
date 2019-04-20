@@ -13,4 +13,5 @@ public abstract interface LanguageImp {
     public String alreadyLogged();
     public String successfullyLoggedIn();
     public String successfullyRegistered();
+    public String addNewRiddle();
 }

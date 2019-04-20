@@ -1,42 +1,27 @@
 package com.example.roees.treasurehunt;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Dash;
-import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
 
-public class InstructorMap extends FragmentActivity implements OnMapReadyCallback {
+public class InstructorMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private Marker touchMarker = null;
+    private HashMap<LatLng,Marker> touchMarkers = new HashMap();
+    private HashMap<LatLng, String> touchRNC = new HashMap();
 
     void zoomToCurrentLocation() {
 //        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -79,21 +64,27 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        googleMap.setOnMarkerClickListener(this);
 
         zoomToCurrentLocation();
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-
-                //delete existing marker and lines
-                if(touchMarker != null) touchMarker.remove();
-
-                //setting the title of the drawn marker to lat/lng coordinates
-                touchMarker = mMap.addMarker(new MarkerOptions().position(latLng));
-                DecimalFormat df = new DecimalFormat("#.###");
-                touchMarker.setTitle("" + df.format(latLng.latitude) + "/" + df.format(latLng.longitude));
+                touchMarkers.put(latLng, mMap.addMarker(new MarkerOptions().position(latLng)));
+                touchRNC.put(latLng, HebrewImp.getInstance().addNewRiddle());
+                touchMarkers.get(latLng).setTitle(HebrewImp.getInstance().addNewRiddle());
             }
         });
     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker){
+        Toast.makeText(this, "Info window clicked",
+                Toast.LENGTH_SHORT).show();
+
+        return false;
+    }
+
+
 }
