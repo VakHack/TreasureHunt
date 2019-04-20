@@ -33,7 +33,6 @@ public class InstructorLogin extends AppCompatActivity {
         response = findViewById(R.id.response);
 
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
-
         if(FirebaseDB.getInstance().isLogged()) startActivity(instructorMapScreen);
 
         submit.setOnClickListener(new View.OnClickListener() {

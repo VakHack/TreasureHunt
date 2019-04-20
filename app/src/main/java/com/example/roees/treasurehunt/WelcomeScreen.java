@@ -18,6 +18,15 @@ public class WelcomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
+        //adding context to DB
+        FirebaseDB.getInstance().initContext(this);
+
+        final Intent instructorMapScreen = new Intent(WelcomeScreen.this, InstructorMap.class);
+        //if already logged jump to the relevant screen
+        if(FirebaseDB.getInstance().isLoggedIn())
+            if(FirebaseDB.getInstance().isInstructor())
+                startActivity(instructorMapScreen);
+
         joinGame = findViewById(R.id.joinGame);
         joinGame.setText(HebrewImp.getInstance().joinGame());
 
@@ -28,7 +37,6 @@ public class WelcomeScreen extends AppCompatActivity {
         gameCode.setHint(HebrewImp.getInstance().enterGameCode());
 
         final Intent instructorScreen = new Intent(WelcomeScreen.this, InstructorLogin.class);
-
         instructor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

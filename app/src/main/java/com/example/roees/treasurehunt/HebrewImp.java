@@ -1,5 +1,7 @@
 package com.example.roees.treasurehunt;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class HebrewImp implements LanguageImp {
     private static final HebrewImp ourInstance = new HebrewImp();
 

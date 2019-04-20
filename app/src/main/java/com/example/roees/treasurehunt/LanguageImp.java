@@ -1,5 +1,7 @@
 package com.example.roees.treasurehunt;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public abstract interface LanguageImp {
     public String createGame();
     public String joinGame();
