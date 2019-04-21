@@ -2,53 +2,37 @@ package com.example.roees.treasurehunt;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class InstructorMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-    private GoogleMap mMap;
-    private FusedLocationProviderClient fusedLocationClient;
-    private HashMap<LatLng,Marker> touchMarkers = new HashMap();
+    private GoogleMap map;
     private HashMap<LatLng, String> touchRNC = new HashMap();
+    private ImageView deleteIcon;
+    private Button deleteMarkerBack;
+    private Marker activatedMarker = null;
+    private EditText riddleLine;
 
     void zoomToCurrentLocation() {
-//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-//
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        fusedLocationClient.getLastLocation()
-//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 0.1f));
-//                        if (location != null) {
-//                            // Logic to handle location object
-//                        }
-//                    }
-//                });
         float zoomLevel = 10.0f;
         //currently Tel Aviv
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.109333, 34.855499), zoomLevel));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.109333, 34.855499), zoomLevel));
     }
 
     @Override
@@ -59,32 +43,62 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        deleteIcon = findViewById(R.id.deleteMarker);
+        deleteMarkerBack = findViewById(R.id.deleteMarkerBackground);
+        riddleLine = findViewById(R.id.riddleLine);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        map = googleMap;
         googleMap.setOnMarkerClickListener(this);
-
         zoomToCurrentLocation();
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                touchMarkers.put(latLng, mMap.addMarker(new MarkerOptions().position(latLng)));
-                touchRNC.put(latLng, HebrewImp.getInstance().addNewRiddle());
-                touchMarkers.get(latLng).setTitle(HebrewImp.getInstance().addNewRiddle());
+                touchRNC.put(latLng, FirebaseDB.getInstance().getLanguageImp().addNewRiddle());
+                deleteIcon.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        deleteMarkerBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteIcon.performClick();
+            }
+        });
+
+        riddleLine.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_GO) {
+                    touchRNC.put(activatedMarker.getPosition(), v.getText().toString());
+                }
+                return false;
+            }
+        });
+
+        deleteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(activatedMarker != null){
+                    activatedMarker.remove();
+                    activatedMarker = null;
+                    deleteIcon.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
 
     @Override
     public boolean onMarkerClick(Marker marker){
-        Toast.makeText(this, "Info window clicked",
-                Toast.LENGTH_SHORT).show();
+        deleteIcon.setVisibility(View.VISIBLE);
+        activatedMarker = marker;
+
+        riddleLine.setVisibility(View.VISIBLE);
+        riddleLine.setHint(FirebaseDB.getInstance().getLanguageImp().addNewRiddle());
 
         return false;
     }
-
-
 }

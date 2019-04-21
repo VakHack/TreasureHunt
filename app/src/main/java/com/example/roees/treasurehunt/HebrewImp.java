@@ -3,14 +3,6 @@ package com.example.roees.treasurehunt;
 import com.google.android.gms.maps.model.LatLng;
 
 public class HebrewImp implements LanguageImp {
-    private static final HebrewImp ourInstance = new HebrewImp();
-
-    public static HebrewImp getInstance() {
-        return ourInstance;
-    }
-
-    private HebrewImp() {
-    }
     @Override
     public String createGame() {
         return "צור משחק";

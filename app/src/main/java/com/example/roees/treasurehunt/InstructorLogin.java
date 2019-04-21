@@ -22,13 +22,13 @@ public class InstructorLogin extends AppCompatActivity {
         setContentView(R.layout.activity_instructor_screen);
 
         password = findViewById(R.id.password);
-        password.setHint(HebrewImp.getInstance().enterPassword());
+        password.setHint(FirebaseDB.getInstance().getLanguageImp().enterPassword());
 
         email = findViewById(R.id.email);
-        email.setHint(HebrewImp.getInstance().enterEmail());
+        email.setHint(FirebaseDB.getInstance().getLanguageImp().enterEmail());
 
         submit = findViewById(R.id.submit);
-        submit.setText(HebrewImp.getInstance().submit());
+        submit.setText(FirebaseDB.getInstance().getLanguageImp().submit());
 
         response = findViewById(R.id.response);
 

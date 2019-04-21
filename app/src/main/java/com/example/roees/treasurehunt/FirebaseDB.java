@@ -14,6 +14,7 @@ public class FirebaseDB implements GameDB {
     private java.lang.String email;
     private java.lang.String password;
     private boolean isLogged = false;
+    private LanguageImp languageImp = new HebrewImp();
 
     private SharedPreferences appMap;
     private SharedPreferences.Editor appMapEditor;
@@ -61,7 +62,7 @@ public class FirebaseDB implements GameDB {
     }
     @Override
     public String instructorEntrance(java.lang.String instructorEmail, java.lang.String instructorPassword) {
-        if(isLogged) return HebrewImp.getInstance().alreadyLogged();
+        if(isLogged) return languageImp.alreadyLogged();
 
         email = instructorEmail;
         password = instructorPassword;
@@ -69,11 +70,11 @@ public class FirebaseDB implements GameDB {
         if(fb.tryRegister(email, password)){
             isLogged = true;
             addUserDataToSharedprefs(true);
-            return HebrewImp.getInstance().successfullyLoggedIn();
+            return languageImp.successfullyLoggedIn();
         } else if(fb.tryLogin(email, password)){
             isLogged = true;
             addUserDataToSharedprefs(true);
-            return HebrewImp.getInstance().successfullyRegistered();
+            return languageImp.successfullyRegistered();
         }else return fb.getLogFeedback();
     }
     @Override
@@ -86,4 +87,9 @@ public class FirebaseDB implements GameDB {
     }
     public String logFeedback(){ return fb.getLogFeedback();}
     public boolean isLogged() {return isLogged;}
+
+    @Override
+    public LanguageImp getLanguageImp() {
+        return languageImp;
+    }
 }

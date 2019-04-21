@@ -28,13 +28,13 @@ public class WelcomeScreen extends AppCompatActivity {
                 startActivity(instructorMapScreen);
 
         joinGame = findViewById(R.id.joinGame);
-        joinGame.setText(HebrewImp.getInstance().joinGame());
+        joinGame.setText(FirebaseDB.getInstance().getLanguageImp().joinGame());
 
         instructor = findViewById(R.id.instructorEntrance);
-        instructor.setText(HebrewImp.getInstance().instructorEntrance());
+        instructor.setText(FirebaseDB.getInstance().getLanguageImp().instructorEntrance());
 
         gameCode = findViewById(R.id.gameCode);
-        gameCode.setHint(HebrewImp.getInstance().enterGameCode());
+        gameCode.setHint(FirebaseDB.getInstance().getLanguageImp().enterGameCode());
 
         final Intent instructorScreen = new Intent(WelcomeScreen.this, InstructorLogin.class);
         instructor.setOnClickListener(new View.OnClickListener() {
