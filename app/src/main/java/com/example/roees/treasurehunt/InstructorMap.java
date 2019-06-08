@@ -1,13 +1,16 @@
 package com.example.roees.treasurehunt;
 
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,24 +18,36 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
 public class InstructorMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap map;
-    private HashMap<LatLng, String> touchRNC = new HashMap();
+    private HashMap<LatLng, String> riddlesNCoordinates = new HashMap();
     private ImageView deleteIcon;
     private Button deleteMarkerBack;
     private Marker activatedMarker = null;
     private EditText riddleLine;
+    private ImageView enterRiddle;
+    final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
+    final Context thisMap = this;
 
     void zoomToCurrentLocation() {
         float zoomLevel = 10.0f;
         //currently Tel Aviv
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.109333, 34.855499), zoomLevel));
+    }
+
+    void buttonsVisibility(int view){
+        deleteIcon.setVisibility(view);
+        deleteMarkerBack.setVisibility(view);
+        riddleLine.setVisibility(view);
+        enterRiddle.setVisibility(view);
     }
 
     @Override
@@ -46,6 +61,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         deleteIcon = findViewById(R.id.deleteMarker);
         deleteMarkerBack = findViewById(R.id.deleteMarkerBackground);
         riddleLine = findViewById(R.id.riddleLine);
+        enterRiddle = findViewById(R.id.enterRiddle);
     }
 
     @Override
@@ -53,12 +69,15 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         map = googleMap;
         googleMap.setOnMarkerClickListener(this);
         zoomToCurrentLocation();
+        buttonsVisibility(View.INVISIBLE);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                touchRNC.put(latLng, FirebaseDB.getInstance().getLanguageImp().addNewRiddle());
-                deleteIcon.setVisibility(View.INVISIBLE);
+                riddlesNCoordinates.put(latLng, DEFAULT_RIDDLE_HINT);
+                map.addMarker(new MarkerOptions().position(latLng));
             }
         });
 
@@ -69,11 +88,11 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
-        riddleLine.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        riddleLine.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_GO) {
-                    touchRNC.put(activatedMarker.getPosition(), v.getText().toString());
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    riddlesNCoordinates.put(activatedMarker.getPosition(), v.toString());
                 }
                 return false;
             }
@@ -82,22 +101,38 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(activatedMarker != null){
-                    activatedMarker.remove();
-                    activatedMarker = null;
-                    deleteIcon.setVisibility(View.INVISIBLE);
-                }
+            if(activatedMarker != null){
+                activatedMarker.remove();
+                activatedMarker = null;
+                buttonsVisibility(View.INVISIBLE);
+            }
+            }
+        });
+
+        enterRiddle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            if(activatedMarker != null && !riddleLine.getText().toString().isEmpty()){
+                riddlesNCoordinates.put(activatedMarker.getPosition(), riddleLine.getText().toString());
+                Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
+                buttonsVisibility(View.INVISIBLE);
+            }
             }
         });
     }
 
     @Override
     public boolean onMarkerClick(Marker marker){
-        deleteIcon.setVisibility(View.VISIBLE);
         activatedMarker = marker;
+        activatedMarker.showInfoWindow();
+        buttonsVisibility(View.VISIBLE);
 
-        riddleLine.setVisibility(View.VISIBLE);
-        riddleLine.setHint(FirebaseDB.getInstance().getLanguageImp().addNewRiddle());
+        if(riddlesNCoordinates.get(marker.getPosition())==DEFAULT_RIDDLE_HINT){
+            riddleLine.setHint(DEFAULT_RIDDLE_HINT);
+        } else {
+            activatedMarker.setTitle(riddlesNCoordinates.get(marker.getPosition()));
+            activatedMarker.showInfoWindow();
+        }
 
         return false;
     }
