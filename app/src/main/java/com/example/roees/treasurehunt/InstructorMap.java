@@ -116,7 +116,9 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             public void onClick(View v) {
             if (activatedMarker != null) {
                 activatedMarker.remove();
+                riddlesNCoordinates.remove(activatedMarker.getPosition());
                 activatedMarker = null;
+                db.editGame(riddlesNCoordinates);
                 buttonsVisibility(View.INVISIBLE);
             }
             }
@@ -127,13 +129,9 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 if (activatedMarker != null && !riddleLine.getText().toString().isEmpty()) {
                     riddlesNCoordinates.put(activatedMarker.getPosition(), riddleLine.getText().toString());
-                    if (db.editGame(riddlesNCoordinates)) {
-                        Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
-                        buttonsVisibility(View.INVISIBLE);
-                        activatedMarker = null;
-                    } else {
-                        Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().riddleAdditionFailed(), Toast.LENGTH_SHORT).show();
-                    }
+                    db.editGame(riddlesNCoordinates);
+                    buttonsVisibility(View.INVISIBLE);
+                    activatedMarker = null;
                 }
             }
         });
