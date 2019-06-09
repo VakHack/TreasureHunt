@@ -58,16 +58,15 @@ public class FirebaseServerHandler {
         serverAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
-                    isSucceeded = true;
-                    logFeedback = "Logged in Successfully";
-                } else {
-                    isSucceeded = false;
-                    logFeedback = task.getException().getMessage();
-                }
+            if(task.isSuccessful()) {
+                isSucceeded = true;
+                logFeedback = "Logged in Successfully";
+            } else {
+                isSucceeded = false;
+                logFeedback = task.getException().getMessage();
+            }
             }
         });
-
         return isSucceeded;
     }
     public boolean tryUploadData(Serializable data) {
@@ -89,9 +88,9 @@ public class FirebaseServerHandler {
         });
         return isSucceeded;
     }
-    public void tryRetrieveData() {
+    public void tryRetrieveData(String uid) {
         final long ONE_MEGABYTE = 1024 * 1024;
-        StorageReference storageReference = storage.getReference().child("uploads/" + getServerUID());
+        StorageReference storageReference = storage.getReference().child("uploads/" + uid);
         storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
@@ -109,7 +108,7 @@ public class FirebaseServerHandler {
     public Serializable getRetrievedData() {
         return retrievedData;
     }
-    private String getServerUID() {
+    public String getServerUID() {
         return serverAuth.getCurrentUser().getUid();
     }
 }

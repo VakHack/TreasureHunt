@@ -24,6 +24,7 @@ public class FirebaseDB implements GameDB {
     private String USERNAME = "USERNAME";
     private String IS_INSTRUCTOR = "IS_INSTRUCTOR";
     private String SHARED_PREFS = "SHARED_PREFS";
+    private String UID = "UID";
     private Context appContext;
     private static final FirebaseDB ourInstance = new FirebaseDB();
     private final int NUMBER_OF_DOWNLOAD_ATTEMPTS = 15;
@@ -57,10 +58,6 @@ public class FirebaseDB implements GameDB {
         return appMap.getBoolean(IS_INSTRUCTOR, false);
     }
     @Override
-    public String joinGame(String instructorEmail) {
-        return null;
-    }
-    @Override
     public String instructorEntrance(String instructorEmail, String instructorPassword) {
         if(isLogged) return languageImp.alreadyLogged();
         email = instructorEmail;
@@ -88,8 +85,8 @@ public class FirebaseDB implements GameDB {
         return fb.getStorageFeedback();
     }
     @Override
-    public void downloadGame() {
-        fb.tryRetrieveData();
+    public void instructorDownloadGame() {
+        fb.tryRetrieveData(fb.getServerUID());
     }
     @Override
     public Map<LatLng, String> getSavedGame(Map<LatLng, String> RNC) {
@@ -117,5 +114,21 @@ public class FirebaseDB implements GameDB {
         appMapEditor = appMap.edit();
         appMapEditor.putBoolean(LOGGED_IN_CLOUD, false);
         appMapEditor.apply();
+    }
+    @Override
+    public String getGameCode() {
+        return fb.getServerUID();
+    }
+    @Override
+    public void playerEntrance(String code) {
+        appMapEditor = appMap.edit();
+        appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
+        appMapEditor.putBoolean(IS_INSTRUCTOR, false);
+        appMapEditor.putString(UID, code);
+        appMapEditor.apply();
+    }
+    @Override
+    public void playerDownloadGame(){
+        fb.tryRetrieveData(appMap.getString(UID, ""));
     }
 }

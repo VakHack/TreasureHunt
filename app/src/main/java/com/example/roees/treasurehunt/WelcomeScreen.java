@@ -24,8 +24,7 @@ public class WelcomeScreen extends AppCompatActivity {
 
         final Intent instructorMapScreen = new Intent(WelcomeScreen.this, InstructorMap.class);
         //if already logged jump to the relevant screen
-        if(db.isLoggedIn())
-            if(db.isInstructor())
+        if(db.isLoggedIn() && db.isInstructor())
                 startActivity(instructorMapScreen);
 
         joinGame = findViewById(R.id.joinGame);
@@ -45,17 +44,12 @@ public class WelcomeScreen extends AppCompatActivity {
             }
         });
 
+        final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-
-        gameCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+                db.playerEntrance(gameCode.getText().toString());
+                startActivity(playerMap);
             }
         });
     }

@@ -59,4 +59,20 @@ public class HebrewImp implements LanguageImp {
     public String gameLoadedSuccessfully() {
         return "משחק נטען בהצלחה";
     }
+    @Override
+    public String newGameCodeTitle() {
+        return "קוד ההצטרפות למשחק";
+    }
+    @Override
+    public String copyGameCodeButton() {
+        return "העתק ללוח";
+    }
+    @Override
+    public String gameCodeCopiedSuccessfully() {
+        return "קוד הועתק בהצלחה!";
+    }
+    @Override
+    public String OKButton() {
+        return "אישור";
+    }
 }

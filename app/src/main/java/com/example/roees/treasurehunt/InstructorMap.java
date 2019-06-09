@@ -1,7 +1,11 @@
 package com.example.roees.treasurehunt;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,12 +13,10 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,7 +29,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.maps.android.SphericalUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private Button deleteMarker;
     private Button enterRiddle;
     private Button logout;
+    private Button play;
     private Marker activatedMarker = null;
     private EditText riddleLine;
     private GameDB db = FirebaseDB.getInstance();
@@ -102,14 +104,6 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             }
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Log.e("th_log", "dasdsadasdas");
             return;
         }
         googleMap.getUiSettings().setMapToolbarEnabled(false);
@@ -129,7 +123,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         riddleLine = findViewById(R.id.riddleLine);
         enterRiddle = findViewById(R.id.enterRiddle);
         logout = findViewById(R.id.logout);
-        db.downloadGame();
+        play = findViewById(R.id.play);
+        db.instructorDownloadGame();
     }
 
     @Override
@@ -192,6 +187,32 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                 db.logout();
                 final Intent welcomeScreen = new Intent(InstructorMap.this, WelcomeScreen.class);
                 startActivity(welcomeScreen);
+            }
+        });
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog alertDialog = new AlertDialog.Builder(thisMap).create();
+                alertDialog.setTitle(db.getLanguageImp().newGameCodeTitle());
+                alertDialog.setMessage(db.getGameCode());
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, db.getLanguageImp().copyGameCodeButton(),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //copy code to clipboard
+                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("game code", db.getGameCode());
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().gameCodeCopiedSuccessfully(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                alertDialog.show();
             }
         });
     }
