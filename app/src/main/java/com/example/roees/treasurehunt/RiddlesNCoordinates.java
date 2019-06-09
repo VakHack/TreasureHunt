@@ -1,5 +1,7 @@
 package com.example.roees.treasurehunt;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
@@ -18,6 +20,7 @@ public class RiddlesNCoordinates implements Serializable {
     private void convertMapToSerializable(Map<LatLng, String> riddlesNCoordinates) {
         for(Map.Entry<LatLng, String> entry : riddlesNCoordinates.entrySet()) {
             String strLatLng = entry.getKey().latitude + " " + entry.getKey().longitude;
+            Log.e("th_log", strLatLng);
             this.riddlesNCoordinates.put(strLatLng, entry.getValue());
         }
     }
@@ -28,7 +31,6 @@ public class RiddlesNCoordinates implements Serializable {
             LatLng latLng = new LatLng(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
             retval.put(latLng, entry.getValue());
         }
-
         return retval;
     }
 }

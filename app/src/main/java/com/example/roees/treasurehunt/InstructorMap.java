@@ -119,6 +119,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                 if(db.editGame(riddlesNCoordinatesObj)){
                     Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
                     buttonsVisibility(View.INVISIBLE);
+                } else {
+                    Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().riddleAdditionFailed(), Toast.LENGTH_SHORT).show();
                 }
             }
             }

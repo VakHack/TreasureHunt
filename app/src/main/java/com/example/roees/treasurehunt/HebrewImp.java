@@ -47,9 +47,12 @@ public class HebrewImp implements LanguageImp {
     public String addNewRiddle() {
         return "הכנס חידה כאן";
     }
-
     @Override
     public String riddleAddedSuccessfully() {
         return "חידה נוספה בהצלחה!";
+    }
+    @Override
+    public String riddleAdditionFailed() {
+        return "שמירת חידה נכשלה";
     }
 }

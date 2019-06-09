@@ -15,4 +15,5 @@ public abstract interface LanguageImp {
     public String successfullyRegistered();
     public String addNewRiddle();
     public String riddleAddedSuccessfully();
+    public String riddleAdditionFailed();
 }
