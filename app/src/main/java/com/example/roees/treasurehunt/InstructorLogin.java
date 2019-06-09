@@ -34,14 +34,17 @@ public class InstructorLogin extends AppCompatActivity {
         response = findViewById(R.id.response);
 
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
-        if(db.isLoggedIn()) startActivity(instructorMapScreen);
+        if(db.isInstructor()){
+            db.login();
+            startActivity(instructorMapScreen);
+        }
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.instructorEntrance(email.getText().toString(),password.getText().toString());
-                response.setText(db.actionFeedback());
-                if(db.isLoggedIn()) startActivity(instructorMapScreen);
+            db.instructorEntrance(email.getText().toString(),password.getText().toString());
+            response.setText(db.actionFeedback());
+            if(db.isLoggedIn()) startActivity(instructorMapScreen);
             }
         });
     }

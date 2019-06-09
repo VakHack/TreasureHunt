@@ -2,6 +2,7 @@ package com.example.roees.treasurehunt;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -36,9 +37,10 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private GoogleMap map;
     private Map<LatLng, String> riddlesNCoordinates = new HashMap<>();
     private Button deleteMarker;
+    private Button enterRiddle;
+    private Button logout;
     private Marker activatedMarker = null;
     private EditText riddleLine;
-    private Button enterRiddle;
     private GameDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
     final Context thisMap = this;
@@ -126,6 +128,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         deleteMarker = findViewById(R.id.deleteMarkerBackground);
         riddleLine = findViewById(R.id.riddleLine);
         enterRiddle = findViewById(R.id.enterRiddle);
+        logout = findViewById(R.id.logout);
         db.downloadGame();
     }
 
@@ -180,6 +183,15 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                     activatedMarker.showInfoWindow();
                     activatedMarker = null;
                 }
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.logout();
+                final Intent welcomeScreen = new Intent(InstructorMap.this, WelcomeScreen.class);
+                startActivity(welcomeScreen);
             }
         });
     }

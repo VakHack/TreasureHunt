@@ -16,8 +16,8 @@
     <Button
         android:id="@+id/deleteMarkerBackground"
         android:layout_alignParentStart="true"
-        android:layout_width="19pt"
-        android:layout_height="19pt"
+        android:layout_width="18pt"
+        android:layout_height="18pt"
         android:layout_marginStart="5pt"
         android:layout_marginTop="5pt"
         android:paddingTop="4pt"
@@ -25,8 +25,19 @@
         android:drawableTint="@color/quantum_grey700"
         android:background="@drawable/round_corner"/>
 
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="18pt"
+        android:layout_height="18pt"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30pt"
+        android:layout_marginEnd="5.5pt"
+        android:background="@drawable/round_corner"
+        android:drawableTop="@drawable/baseline_exit_to_app_24"
+        android:drawableTint="@color/quantum_grey700"
+        android:paddingTop="4pt"/>
+
     <EditText
-        android:visibility="invisible"
         android:id="@+id/riddleLine"
         android:layout_width="match_parent"
         android:layout_height="20pt"

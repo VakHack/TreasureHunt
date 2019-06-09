@@ -35,6 +35,7 @@ public class FirebaseDB implements GameDB {
         fb = new FirebaseServerHandler();
         //initialize shared preferences
     }
+    @Override
     public void initContext(Context context){
         appContext = context;
         appMap = appContext.getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -83,10 +84,6 @@ public class FirebaseDB implements GameDB {
         return languageImp;
     }
     @Override
-    public boolean didActionSucceeded() {
-        return fb.didActionSucceeded();
-    }
-    @Override
     public String actionFeedback() {
         return fb.getStorageFeedback();
     }
@@ -108,5 +105,17 @@ public class FirebaseDB implements GameDB {
             }
         }
         return newRNCMap;
+    }
+    @Override
+    public void login() {
+        appMapEditor = appMap.edit();
+        appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
+        appMapEditor.apply();
+    }
+    @Override
+    public void logout() {
+        appMapEditor = appMap.edit();
+        appMapEditor.putBoolean(LOGGED_IN_CLOUD, false);
+        appMapEditor.apply();
     }
 }

@@ -12,6 +12,7 @@ public class WelcomeScreen extends AppCompatActivity {
     Button joinGame;
     Button instructor;
     EditText gameCode;
+    private GameDB db = FirebaseDB.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,22 +20,22 @@ public class WelcomeScreen extends AppCompatActivity {
         setContentView(R.layout.activity_login_screen);
 
         //adding context to DB
-        FirebaseDB.getInstance().initContext(this);
+        db.initContext(this);
 
         final Intent instructorMapScreen = new Intent(WelcomeScreen.this, InstructorMap.class);
         //if already logged jump to the relevant screen
-        if(FirebaseDB.getInstance().isLoggedIn())
-            if(FirebaseDB.getInstance().isInstructor())
+        if(db.isLoggedIn())
+            if(db.isInstructor())
                 startActivity(instructorMapScreen);
 
         joinGame = findViewById(R.id.joinGame);
-        joinGame.setText(FirebaseDB.getInstance().getLanguageImp().joinGame());
+        joinGame.setText(db.getLanguageImp().joinGame());
 
         instructor = findViewById(R.id.instructorEntrance);
-        instructor.setText(FirebaseDB.getInstance().getLanguageImp().instructorEntrance());
+        instructor.setText(db.getLanguageImp().instructorEntrance());
 
         gameCode = findViewById(R.id.gameCode);
-        gameCode.setHint(FirebaseDB.getInstance().getLanguageImp().enterGameCode());
+        gameCode.setHint(db.getLanguageImp().enterGameCode());
 
         final Intent instructorScreen = new Intent(WelcomeScreen.this, InstructorLogin.class);
         instructor.setOnClickListener(new View.OnClickListener() {
