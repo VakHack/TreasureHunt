@@ -34,6 +34,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private Marker activatedMarker = null;
     private EditText riddleLine;
     private ImageView enterRiddle;
+    private GameDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
     final Context thisMap = this;
 
@@ -91,10 +92,10 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         riddleLine.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    riddlesNCoordinates.put(activatedMarker.getPosition(), v.toString());
-                }
-                return false;
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                riddlesNCoordinates.put(activatedMarker.getPosition(), v.toString());
+            }
+            return false;
             }
         });
 
@@ -114,8 +115,11 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             public void onClick(View v) {
             if(activatedMarker != null && !riddleLine.getText().toString().isEmpty()){
                 riddlesNCoordinates.put(activatedMarker.getPosition(), riddleLine.getText().toString());
-                Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
-                buttonsVisibility(View.INVISIBLE);
+                RiddlesNCoordinates riddlesNCoordinatesObj = new RiddlesNCoordinates(riddlesNCoordinates);
+                if(db.editGame(riddlesNCoordinatesObj)){
+                    Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
+                    buttonsVisibility(View.INVISIBLE);
+                }
             }
             }
         });
@@ -126,14 +130,12 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         activatedMarker = marker;
         activatedMarker.showInfoWindow();
         buttonsVisibility(View.VISIBLE);
-
         if(riddlesNCoordinates.get(marker.getPosition())==DEFAULT_RIDDLE_HINT){
             riddleLine.setHint(DEFAULT_RIDDLE_HINT);
         } else {
             activatedMarker.setTitle(riddlesNCoordinates.get(marker.getPosition()));
             activatedMarker.showInfoWindow();
         }
-
         return false;
     }
 }

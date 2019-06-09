@@ -28,50 +28,38 @@ public class FirebaseServerHandler {
         serverAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
     }
-
     public String getLogFeedback() {
         return logFeedback;
     }
-
     public String getStorageFeedback() {
         return storageFeedback;
     }
-
+    public boolean didActionSucceeded() {
+        return isSucceeded;
+    }
     public boolean tryRegister(String username, String password) {
-
         serverAuth.createUserWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if(task.isSuccessful()) {
-
-                    isSucceeded = true;
-                    logFeedback = "Register Successfully";
-
-                } else {
-
-                    isSucceeded = false;
-                    logFeedback = task.getException().getMessage();
-                }
+            if(task.isSuccessful()) {
+                isSucceeded = true;
+                logFeedback = "Register Successfully";
+            } else {
+                isSucceeded = false;
+                logFeedback = task.getException().getMessage();
+            }
             }
         });
-
         return isSucceeded;
     }
-
     public boolean tryLogin(String username, String password) {
-
         serverAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
                 if(task.isSuccessful()) {
-
                     isSucceeded = true;
                     logFeedback = "Logged in Successfully";
-
                 } else {
-
                     isSucceeded = false;
                     logFeedback = task.getException().getMessage();
                 }
@@ -80,58 +68,43 @@ public class FirebaseServerHandler {
 
         return isSucceeded;
     }
-
-    public boolean tryUploadData(Object data) {
-
-        byte[] serializedData = SerializationUtils.serialize((Serializable)data);
-
+    public boolean tryUploadData(Serializable data) {
+        byte[] serializedData = SerializationUtils.serialize(data);
         UploadTask uploadTask = storage.getReference().child("uploads/" + getServerUID()).putBytes(serializedData);
-
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                isSucceeded = true;
-                storageFeedback = "Data uploaded successfully";
+            isSucceeded = true;
+            storageFeedback = "Data uploaded successfully";
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                        isSucceeded = false;
-                        storageFeedback = e.getMessage();
-                    }
-                });
-
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            isSucceeded = false;
+            storageFeedback = e.getMessage();
+            }
+        });
         return isSucceeded;
     }
-
     public Object tryRetrieveData() {
-
         final long ONE_MEGABYTE = 1024 * 1024;
         StorageReference storageReference = storage.getReference().child("uploads/" + getServerUID());
-
         storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-
                 retrievedData = SerializationUtils.deserialize(bytes);
                 storageFeedback = "Data downloaded successfully";
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-
                 retrievedData = null;
                 storageFeedback = exception.getMessage();
             }
         });
-
         return retrievedData;
     }
-
     private String getServerUID() {
         return serverAuth.getCurrentUser().getUid();
     }

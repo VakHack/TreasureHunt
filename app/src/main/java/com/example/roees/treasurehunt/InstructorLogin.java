@@ -15,6 +15,7 @@ public class InstructorLogin extends AppCompatActivity {
     EditText password;
     EditText email;
     TextView response;
+    private GameDB db = FirebaseDB.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,27 +23,25 @@ public class InstructorLogin extends AppCompatActivity {
         setContentView(R.layout.activity_instructor_screen);
 
         password = findViewById(R.id.password);
-        password.setHint(FirebaseDB.getInstance().getLanguageImp().enterPassword());
+        password.setHint(db.getLanguageImp().enterPassword());
 
         email = findViewById(R.id.email);
-        email.setHint(FirebaseDB.getInstance().getLanguageImp().enterEmail());
+        email.setHint(db.getLanguageImp().enterEmail());
 
         submit = findViewById(R.id.submit);
-        submit.setText(FirebaseDB.getInstance().getLanguageImp().submit());
+        submit.setText(db.getLanguageImp().submit());
 
         response = findViewById(R.id.response);
 
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
-        if(FirebaseDB.getInstance().isLogged()) startActivity(instructorMapScreen);
+        if(db.isLoggedIn()) startActivity(instructorMapScreen);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDB.getInstance().instructorEntrance(email.getText().toString(),password.getText().toString());
-                response.setText(FirebaseDB.getInstance().logFeedback());
-                Log.e("log",""+FirebaseDB.getInstance().isLogged());
-
-                if(FirebaseDB.getInstance().isLogged()) startActivity(instructorMapScreen);
+                db.instructorEntrance(email.getText().toString(),password.getText().toString());
+                response.setText(db.actionFeedback());
+                if(db.isLoggedIn()) startActivity(instructorMapScreen);
             }
         });
     }
