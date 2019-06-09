@@ -20,7 +20,6 @@ public class RiddlesNCoordinates implements Serializable {
     private void convertMapToSerializable(Map<LatLng, String> riddlesNCoordinates) {
         for(Map.Entry<LatLng, String> entry : riddlesNCoordinates.entrySet()) {
             String strLatLng = entry.getKey().latitude + " " + entry.getKey().longitude;
-            Log.e("th_log", strLatLng);
             this.riddlesNCoordinates.put(strLatLng, entry.getValue());
         }
     }

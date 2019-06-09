@@ -21,13 +21,14 @@ public class FirebaseServerHandler {
     private FirebaseAuth serverAuth;
     private boolean isSucceeded;
     private FirebaseStorage storage;
-    private Object retrievedData;
+    private Serializable retrievedData;
     private String logFeedback;
     private String storageFeedback;
 
     public FirebaseServerHandler() {
         serverAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
+        storageFeedback = logFeedback = "No feedback";
     }
     public String getLogFeedback() {
         return logFeedback;
@@ -88,22 +89,24 @@ public class FirebaseServerHandler {
         });
         return isSucceeded;
     }
-    public Object tryRetrieveData() {
+    public void tryRetrieveData() {
         final long ONE_MEGABYTE = 1024 * 1024;
         StorageReference storageReference = storage.getReference().child("uploads/" + getServerUID());
         storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                retrievedData = SerializationUtils.deserialize(bytes);
-                storageFeedback = "Data downloaded successfully";
+            retrievedData = SerializationUtils.deserialize(bytes);
+            storageFeedback = "Data downloaded successfully";
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                retrievedData = null;
-                storageFeedback = exception.getMessage();
+            retrievedData = null;
+            storageFeedback = exception.getMessage();
             }
         });
+    }
+    public Serializable getRetrievedData() {
         return retrievedData;
     }
     private String getServerUID() {

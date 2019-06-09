@@ -2,25 +2,32 @@ package com.example.roees.treasurehunt;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.Serializable;
+import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class FirebaseDB implements GameDB {
     private FirebaseServerHandler fb;
-    private java.lang.String email;
-    private java.lang.String password;
+    private String email;
+    private String password;
     private boolean isLogged = false;
     private LanguageImp languageImp = new HebrewImp();
     private SharedPreferences appMap;
     private SharedPreferences.Editor appMapEditor;
-    private java.lang.String LOGGED_IN_CLOUD = "LOGGED_IN";
-    private java.lang.String USER_PASSWORD = "USER_PASSWORD";
-    private java.lang.String USERNAME = "USERNAME";
-    private java.lang.String IS_INSTRUCTOR = "IS_INSTRUCTOR";
-    private java.lang.String SHARED_PREFS = "SHARED_PREFS";
+    private String LOGGED_IN_CLOUD = "LOGGED_IN";
+    private String USER_PASSWORD = "USER_PASSWORD";
+    private String USERNAME = "USERNAME";
+    private String IS_INSTRUCTOR = "IS_INSTRUCTOR";
+    private String SHARED_PREFS = "SHARED_PREFS";
     private Context appContext;
-
     private static final FirebaseDB ourInstance = new FirebaseDB();
+    private final int NUMBER_OF_DOWNLOAD_ATTEMPTS = 15;
+
     public static FirebaseDB getInstance() {
         return ourInstance;
     }
@@ -49,11 +56,11 @@ public class FirebaseDB implements GameDB {
         return appMap.getBoolean(IS_INSTRUCTOR, false);
     }
     @Override
-    public String joinGame(java.lang.String instructorEmail) {
+    public String joinGame(String instructorEmail) {
         return null;
     }
     @Override
-    public String instructorEntrance(java.lang.String instructorEmail, java.lang.String instructorPassword) {
+    public String instructorEntrance(String instructorEmail, String instructorPassword) {
         if(isLogged) return languageImp.alreadyLogged();
         email = instructorEmail;
         password = instructorPassword;
@@ -68,8 +75,8 @@ public class FirebaseDB implements GameDB {
         }else return fb.getLogFeedback();
     }
     @Override
-    public boolean editGame(RiddlesNCoordinates riddlesNCoordinatesR) {
-        return fb.tryUploadData(riddlesNCoordinatesR);
+    public boolean editGame(Map<LatLng, String> riddlesNCoordinatesR) {
+        return fb.tryUploadData(new RiddlesNCoordinates(riddlesNCoordinatesR));
     }
     @Override
     public LanguageImp getLanguageImp() {
@@ -82,5 +89,24 @@ public class FirebaseDB implements GameDB {
     @Override
     public String actionFeedback() {
         return fb.getStorageFeedback();
+    }
+    @Override
+    public void downloadGame() {
+        fb.tryRetrieveData();
+    }
+    @Override
+    public Map<LatLng, String> getSavedGame(Map<LatLng, String> RNC) {
+        Map<LatLng, String> newRNCMap = null;
+        for(int i = 0; i < NUMBER_OF_DOWNLOAD_ATTEMPTS; ++i){
+            RiddlesNCoordinates newRNC=(RiddlesNCoordinates)fb.getRetrievedData();
+            if(newRNC!=null){
+                newRNCMap = newRNC.get();
+                for(Map.Entry<LatLng, String> entry : RNC.entrySet()) {
+                    newRNCMap.put(entry.getKey(),entry.getValue());
+                }
+                break;
+            }
+        }
+        return newRNCMap;
     }
 }

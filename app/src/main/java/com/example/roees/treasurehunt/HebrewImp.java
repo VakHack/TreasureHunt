@@ -55,4 +55,8 @@ public class HebrewImp implements LanguageImp {
     public String riddleAdditionFailed() {
         return "שמירת חידה נכשלה";
     }
+    @Override
+    public String gameLoadedSuccessfully() {
+        return "משחק נטען בהצלחה";
+    }
 }

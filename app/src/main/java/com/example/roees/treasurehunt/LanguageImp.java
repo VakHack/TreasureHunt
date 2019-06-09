@@ -14,6 +14,7 @@ public abstract interface LanguageImp {
     public String successfullyLoggedIn();
     public String successfullyRegistered();
     public String addNewRiddle();
+    public String gameLoadedSuccessfully();
     public String riddleAddedSuccessfully();
     public String riddleAdditionFailed();
 }
