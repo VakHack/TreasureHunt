@@ -1,6 +1,11 @@
 package com.example.roees.treasurehunt;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,6 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.SphericalUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,41 +35,84 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
 
     private GoogleMap map;
     private Map<LatLng, String> riddlesNCoordinates = new HashMap<>();
-    private ImageView deleteIcon;
-    private Button deleteMarkerBack;
+    private Button deleteMarker;
     private Marker activatedMarker = null;
     private EditText riddleLine;
-    private ImageView enterRiddle;
+    private Button enterRiddle;
     private GameDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
     final Context thisMap = this;
     private boolean wasGameLoaded = false;
+    final float ZOOM_FACTOR = 14;
+    final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
+    private LatLng myLoc = DEFAULT_LATLNG;
 
     void zoomToCurrentLocation() {
-        float zoomLevel = 10.0f;
-        //currently Tel Aviv
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.109333, 34.855499), zoomLevel));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            myLoc = new LatLng(location.getLatitude(), location.getLongitude());
+                        }
+                    }
+                });
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLoc, ZOOM_FACTOR));
     }
 
     void buttonsVisibility(int view) {
-        deleteIcon.setVisibility(view);
-        deleteMarkerBack.setVisibility(view);
+        deleteMarker.setVisibility(view);
         riddleLine.setVisibility(view);
         enterRiddle.setVisibility(view);
     }
 
-    void addSavedMarkers(){
-        if(!wasGameLoaded){
+    void addSavedMarkers() {
+        if (!wasGameLoaded) {
             Map<LatLng, String> newRNC = db.getSavedGame(riddlesNCoordinates);
-            if(newRNC!=null){
+            if (newRNC != null) {
                 riddlesNCoordinates = newRNC;
                 wasGameLoaded = true;
-                for(Map.Entry<LatLng, String> entry : riddlesNCoordinates.entrySet()) {
+                for (Map.Entry<LatLng, String> entry : riddlesNCoordinates.entrySet()) {
                     map.addMarker(new MarkerOptions().position(entry.getKey()));
                 }
                 Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().gameLoadedSuccessfully(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    void initGoogleMapUtils(GoogleMap googleMap) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission
+                    (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    &&
+                    ActivityCompat.checkSelfPermission
+                            (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                }, 1); // 1 is requestCode
+                return;
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Log.e("th_log", "dasdsadasdas");
+            return;
+        }
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
     @Override
@@ -71,33 +123,39 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        deleteIcon = findViewById(R.id.deleteMarker);
-        deleteMarkerBack = findViewById(R.id.deleteMarkerBackground);
+        deleteMarker = findViewById(R.id.deleteMarkerBackground);
         riddleLine = findViewById(R.id.riddleLine);
         enterRiddle = findViewById(R.id.enterRiddle);
         db.downloadGame();
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         map = googleMap;
         googleMap.setOnMarkerClickListener(this);
-        zoomToCurrentLocation();
         buttonsVisibility(View.INVISIBLE);
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        initGoogleMapUtils(googleMap);
+        zoomToCurrentLocation();
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-            riddlesNCoordinates.put(latLng, DEFAULT_RIDDLE_HINT);
-            map.addMarker(new MarkerOptions().position(latLng));
+                if(!riddlesNCoordinates.containsKey(latLng)) riddlesNCoordinates.put(latLng, DEFAULT_RIDDLE_HINT);
+                activatedMarker = map.addMarker(new MarkerOptions().position(latLng));
+                buttonsVisibility(View.VISIBLE);
             }
         });
 
-        deleteMarkerBack.setOnClickListener(new View.OnClickListener() {
+        deleteMarker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteIcon.performClick();
+                if (activatedMarker != null) {
+                    activatedMarker.remove();
+                    riddlesNCoordinates.remove(activatedMarker.getPosition());
+                    activatedMarker = null;
+                    db.editGame(riddlesNCoordinates);
+                    buttonsVisibility(View.INVISIBLE);
+                }
             }
         });
 
@@ -111,19 +169,6 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
-        deleteIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            if (activatedMarker != null) {
-                activatedMarker.remove();
-                riddlesNCoordinates.remove(activatedMarker.getPosition());
-                activatedMarker = null;
-                db.editGame(riddlesNCoordinates);
-                buttonsVisibility(View.INVISIBLE);
-            }
-            }
-        });
-
         enterRiddle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +176,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                     riddlesNCoordinates.put(activatedMarker.getPosition(), riddleLine.getText().toString());
                     db.editGame(riddlesNCoordinates);
                     buttonsVisibility(View.INVISIBLE);
+                    activatedMarker.setTitle(riddlesNCoordinates.get(activatedMarker.getPosition()));
+                    activatedMarker.showInfoWindow();
                     activatedMarker = null;
                 }
             }
@@ -140,16 +187,15 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         activatedMarker = marker;
-        activatedMarker.showInfoWindow();
         buttonsVisibility(View.VISIBLE);
         addSavedMarkers();
-
-        if (riddlesNCoordinates.get(marker.getPosition()) == DEFAULT_RIDDLE_HINT) {
-            riddleLine.setHint(DEFAULT_RIDDLE_HINT);
-        } else {
-            activatedMarker.setTitle(riddlesNCoordinates.get(marker.getPosition()));
+        String hint = riddlesNCoordinates.get(marker.getPosition());
+        if(hint!=DEFAULT_RIDDLE_HINT) {
+            activatedMarker.setTitle(hint);
             activatedMarker.showInfoWindow();
         }
+        riddleLine.setText("");
+        riddleLine.setHint(hint);
         return false;
     }
 }
