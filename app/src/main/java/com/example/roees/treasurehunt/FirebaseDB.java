@@ -131,4 +131,12 @@ public class FirebaseDB implements GameDB {
     public void playerDownloadGame(){
         fb.tryRetrieveData(appMap.getString(UID, ""));
     }
+    @Override
+    public String getSavedUsername() {
+        return appMap.getString(USERNAME, "");
+    }
+    @Override
+    public String getSavedPassword() {
+        return appMap.getString(USER_PASSWORD, "");
+    }
 }

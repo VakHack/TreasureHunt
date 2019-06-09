@@ -21,4 +21,6 @@ public interface GameDB {
     public void login();
     public void logout();
     public boolean isLoggedIn();
+    public String getSavedUsername();
+    public String getSavedPassword();
 }
