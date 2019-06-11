@@ -32,16 +32,19 @@ public class FirebaseDB implements GameDB {
     public static FirebaseDB getInstance() {
         return ourInstance;
     }
+
     private FirebaseDB() {
         fb = new FirebaseServerHandler();
         //initialize shared preferences
     }
+
     @Override
-    public void initContext(Context context){
+    public void initContext(Context context) {
         appContext = context;
         appMap = appContext.getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
     }
-    private void addUserDataToSharedprefs(boolean isInstructor){
+
+    private void addUserDataToSharedprefs(boolean isInstructor) {
         appMapEditor = appMap.edit();
         appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
         appMapEditor.putBoolean(IS_INSTRUCTOR, isInstructor);
@@ -49,76 +52,88 @@ public class FirebaseDB implements GameDB {
         appMapEditor.putString(USERNAME, email);
         appMapEditor.apply();
     }
+
     @Override
-    public boolean isLoggedIn(){
+    public boolean isLoggedIn() {
         return appMap.getBoolean(LOGGED_IN_CLOUD, false);
     }
+
     @Override
-    public boolean isInstructor(){
+    public boolean isInstructor() {
         return appMap.getBoolean(IS_INSTRUCTOR, false);
     }
+
     @Override
-    public String instructorEntrance(String instructorEmail, String instructorPassword) {
-        if(isLogged) return languageImp.alreadyLogged();
+    public boolean instructorEntrance(String instructorEmail, String instructorPassword) {
+        if (isLogged) return true;
         email = instructorEmail;
         password = instructorPassword;
-        if(fb.tryRegister(email, password)){
+        if (fb.tryRegister(email, password)) {
             isLogged = true;
             addUserDataToSharedprefs(true);
-            return languageImp.successfullyLoggedIn();
-        } else if(fb.tryLogin(email, password)){
+            return isLogged;
+        } else if (fb.tryLogin(email, password)) {
             isLogged = true;
             addUserDataToSharedprefs(true);
-            return languageImp.successfullyRegistered();
-        }else return fb.getLogFeedback();
+            return true;
+        } else return false;
     }
+
     @Override
     public boolean editGame(Map<LatLng, String> riddlesNCoordinatesR) {
         return fb.tryUploadData(new RiddlesNCoordinates(riddlesNCoordinatesR));
     }
+
     @Override
     public LanguageImp getLanguageImp() {
         return languageImp;
     }
+
     @Override
-    public String actionFeedback() {
+    public String downloadFeedback() {
         return fb.getStorageFeedback();
     }
+
     @Override
     public void instructorDownloadGame() {
         fb.tryRetrieveData(fb.getServerUID());
     }
+
     @Override
     public Map<LatLng, String> getSavedGame(Map<LatLng, String> RNC) {
         Map<LatLng, String> newRNCMap = null;
-        for(int i = 0; i < NUMBER_OF_DOWNLOAD_ATTEMPTS; ++i){
-            RiddlesNCoordinates newRNC=(RiddlesNCoordinates)fb.getRetrievedData();
-            if(newRNC!=null){
+        for (int i = 0; i < NUMBER_OF_DOWNLOAD_ATTEMPTS; ++i) {
+            RiddlesNCoordinates newRNC = (RiddlesNCoordinates) fb.getRetrievedData();
+            if (newRNC != null) {
                 newRNCMap = newRNC.get();
-                for(Map.Entry<LatLng, String> entry : RNC.entrySet()) {
-                    newRNCMap.put(entry.getKey(),entry.getValue());
+                for (Map.Entry<LatLng, String> entry : RNC.entrySet()) {
+                    newRNCMap.put(entry.getKey(), entry.getValue());
                 }
                 break;
             }
         }
         return newRNCMap;
     }
+
     @Override
     public void login() {
         appMapEditor = appMap.edit();
         appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
         appMapEditor.apply();
     }
+
     @Override
     public void logout() {
         appMapEditor = appMap.edit();
         appMapEditor.putBoolean(LOGGED_IN_CLOUD, false);
         appMapEditor.apply();
     }
+
     @Override
     public String getGameCode() {
         return fb.getServerUID();
     }
+
     @Override
     public void playerEntrance(String code) {
         appMapEditor = appMap.edit();
@@ -127,16 +142,24 @@ public class FirebaseDB implements GameDB {
         appMapEditor.putString(UID, code);
         appMapEditor.apply();
     }
+
     @Override
-    public void playerDownloadGame(){
+    public void playerDownloadGame() {
         fb.tryRetrieveData(appMap.getString(UID, ""));
     }
+
     @Override
     public String getSavedUsername() {
         return appMap.getString(USERNAME, "");
     }
+
     @Override
     public String getSavedPassword() {
         return appMap.getString(USER_PASSWORD, "");
+    }
+
+    @Override
+    public String loginFeedback() {
+        return fb.getLogFeedback();
     }
 }

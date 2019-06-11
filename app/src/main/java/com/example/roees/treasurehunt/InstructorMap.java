@@ -45,7 +45,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private EditText riddleLine;
     private GameDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
-    final Context thisMap = this;
+    final Context myContext = this;
     private boolean wasGameLoaded = false;
     final float ZOOM_FACTOR = 14;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
@@ -83,7 +83,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                 for (Map.Entry<LatLng, String> entry : riddlesNCoordinates.entrySet()) {
                     map.addMarker(new MarkerOptions().position(entry.getKey()));
                 }
-                Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().gameLoadedSuccessfully(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().gameLoadedSuccessfully(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -94,8 +94,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                     (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     &&
                     ActivityCompat.checkSelfPermission
-                            (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
+                            (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION
@@ -138,7 +137,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if(!riddlesNCoordinates.containsKey(latLng)) riddlesNCoordinates.put(latLng, DEFAULT_RIDDLE_HINT);
+                if (!riddlesNCoordinates.containsKey(latLng))
+                    riddlesNCoordinates.put(latLng, DEFAULT_RIDDLE_HINT);
                 activatedMarker = map.addMarker(new MarkerOptions().position(latLng));
                 buttonsVisibility(View.VISIBLE);
             }
@@ -160,10 +160,10 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         riddleLine.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                riddlesNCoordinates.put(activatedMarker.getPosition(), v.toString());
-            }
-            return false;
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    riddlesNCoordinates.put(activatedMarker.getPosition(), v.toString());
+                }
+                return false;
             }
         });
 
@@ -193,25 +193,25 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog alertDialog = new AlertDialog.Builder(thisMap).create();
+                AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
                 alertDialog.setTitle(db.getLanguageImp().newGameCodeTitle());
                 alertDialog.setMessage(db.getGameCode());
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                 alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, db.getLanguageImp().copyGameCodeButton(),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //copy code to clipboard
-                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText("game code", db.getGameCode());
-                            clipboard.setPrimaryClip(clip);
-                            Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().gameCodeCopiedSuccessfully(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //copy code to clipboard
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("game code", db.getGameCode());
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().gameCodeCopiedSuccessfully(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                 alertDialog.show();
             }
         });
@@ -223,7 +223,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         buttonsVisibility(View.VISIBLE);
         addSavedMarkers();
         String hint = riddlesNCoordinates.get(marker.getPosition());
-        if(hint!=DEFAULT_RIDDLE_HINT) {
+        if (hint != DEFAULT_RIDDLE_HINT) {
             activatedMarker.setTitle(hint);
             activatedMarker.showInfoWindow();
         }

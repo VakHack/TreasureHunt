@@ -1,20 +1,21 @@
 package com.example.roees.treasurehunt;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class InstructorLogin extends AppCompatActivity {
 
     Button submit;
     EditText password;
     EditText email;
-    TextView response;
+    final Context myContext = this;
     private GameDB db = FirebaseDB.getInstance();
 
     @Override
@@ -33,8 +34,6 @@ public class InstructorLogin extends AppCompatActivity {
         submit = findViewById(R.id.submit);
         submit.setText(db.getLanguageImp().submit());
 
-        response = findViewById(R.id.response);
-
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
         if(db.isInstructor()){
             db.login();
@@ -44,9 +43,9 @@ public class InstructorLogin extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            db.instructorEntrance(email.getText().toString(),password.getText().toString());
-            response.setText(db.actionFeedback());
-            if(db.isLoggedIn()) startActivity(instructorMapScreen);
+            boolean isLogged = db.instructorEntrance(email.getText().toString(),password.getText().toString());
+            if(!isLogged) Toast.makeText(myContext, db.loginFeedback(), Toast.LENGTH_SHORT).show();
+            else startActivity(instructorMapScreen);
             }
         });
     }

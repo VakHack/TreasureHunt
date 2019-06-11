@@ -28,7 +28,8 @@ public class FirebaseServerHandler {
     public FirebaseServerHandler() {
         serverAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
-        storageFeedback = logFeedback = "No feedback";
+        storageFeedback = "No feedback, Try again";
+        logFeedback = "No feedback, Try again";
     }
     public String getLogFeedback() {
         return logFeedback;

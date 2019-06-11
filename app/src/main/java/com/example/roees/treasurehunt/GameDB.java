@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface GameDB {
     public void initContext(Context context);
-    public String instructorEntrance(String instructorEmail, String instructorPassword);
+    public boolean instructorEntrance(String instructorEmail, String instructorPassword);
     public void instructorDownloadGame();
     public boolean isInstructor();
     public boolean editGame(Map<LatLng, String> riddlesNCoordinatesR);
@@ -16,7 +16,8 @@ public interface GameDB {
     public Map<LatLng, String> getSavedGame(Map<LatLng, String> RNC);
     public void playerEntrance(String code);
     public void playerDownloadGame();
-    public String actionFeedback();
+    public String downloadFeedback();
+    public String loginFeedback();
     public LanguageImp getLanguageImp();
     public void login();
     public void logout();

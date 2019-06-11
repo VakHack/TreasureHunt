@@ -72,8 +72,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                     (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     &&
                     ActivityCompat.checkSelfPermission
-                            (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
+                            (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION
@@ -109,9 +108,9 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            db.logout();
-            final Intent welcomeScreen = new Intent(PlayerMap.this, WelcomeScreen.class);
-            startActivity(welcomeScreen);
+                db.logout();
+                final Intent welcomeScreen = new Intent(PlayerMap.this, WelcomeScreen.class);
+                startActivity(welcomeScreen);
             }
         });
     }

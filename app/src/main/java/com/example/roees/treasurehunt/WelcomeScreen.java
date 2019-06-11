@@ -1,17 +1,20 @@
 package com.example.roees.treasurehunt;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class WelcomeScreen extends AppCompatActivity {
 
     Button joinGame;
     Button instructor;
     EditText gameCode;
+    final Context myContext = this;
     private GameDB db = FirebaseDB.getInstance();
 
     @Override
@@ -24,8 +27,8 @@ public class WelcomeScreen extends AppCompatActivity {
 
         final Intent instructorMapScreen = new Intent(WelcomeScreen.this, InstructorMap.class);
         //if already logged jump to the relevant screen
-        if(db.isLoggedIn() && db.isInstructor())
-                startActivity(instructorMapScreen);
+        if (db.isLoggedIn() && db.isInstructor())
+            startActivity(instructorMapScreen);
 
         joinGame = findViewById(R.id.joinGame);
         joinGame.setText(db.getLanguageImp().joinGame());
@@ -48,8 +51,13 @@ public class WelcomeScreen extends AppCompatActivity {
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.playerEntrance(gameCode.getText().toString());
-                startActivity(playerMap);
+                String codeText = gameCode.getText().toString();
+                if (!codeText.isEmpty()) {
+                    db.playerEntrance(codeText);
+                    startActivity(playerMap);
+                } else {
+                    Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
