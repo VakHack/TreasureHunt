@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -91,10 +92,17 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public boolean pushRiddle(LatLng riddle, String coordinate) {
+    public void pushRiddle(LatLng riddle, String coordinate) {
         Pair<LatLng, String> newRNC = new Pair<>(riddle, coordinate);
         RNCMap.put(RNCMap.size()+1, newRNC);
-        return fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
+        while(!fb.tryUploadData(new RiddlesNCoordinates(RNCMap))){
+            try {
+                appContext.wait(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Toast.makeText(appContext, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -193,5 +201,10 @@ public class FirebaseDB implements GameDB {
     @Override
     public Integer getNumOfRiddles() {
         return RNCMap.size();
+    }
+
+    @Override
+    public boolean didActionSucceeded() {
+        return fb.didActionSucceeded();
     }
 }

@@ -160,6 +160,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                     buttonsVisibility(View.INVISIBLE);
                     showInfoWindow(db.getLanguageImp().riddleTitle()+numOfRiddles,riddleLine.getText().toString());
                     activatedMarker = null;
+                    riddleLine.setText("");
                 }
             }
         });

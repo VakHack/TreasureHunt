@@ -24,7 +24,7 @@ public class RiddlesNCoordinates implements Serializable {
     private void convertMapToSerializable(Map<Integer, Pair<LatLng, String>> riddlesNCoordinates) {
         for (Map.Entry<Integer, Pair<LatLng, String>> entry : riddlesNCoordinates.entrySet()) {
             String strLatLng = entry.getValue().first.latitude + " " + entry.getValue().first.longitude;
-            String strPair = strLatLng+"|"+entry.getValue().second;
+            String strPair = strLatLng+" "+entry.getValue().second;
             this.riddlesNCoordinates.put(entry.getKey(), strPair);
         }
     }
@@ -32,10 +32,9 @@ public class RiddlesNCoordinates implements Serializable {
     private Map<Integer, Pair<LatLng, String>> convertSerializableToMap() {
         Map<Integer, Pair<LatLng, String>> retval = new HashMap<>();
         for (Map.Entry<Integer, String> entry : riddlesNCoordinates.entrySet()) {
-            String[] pairSplit = entry.getValue().split("|");
-            String[] coordinateSplit = pairSplit[0].split(" ");
-            LatLng latLng = new LatLng(Double.parseDouble(coordinateSplit[0]), Double.parseDouble(coordinateSplit[1]));
-            Pair<LatLng, String> newPair = new Pair(latLng, pairSplit[1]);
+            String[] split = entry.getValue().split(" ");
+            LatLng latLng = new LatLng(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
+            Pair<LatLng, String> newPair = new Pair(latLng, split[2]);
             retval.put(entry.getKey(), newPair);
         }
         return retval;

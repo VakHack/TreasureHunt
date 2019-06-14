@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class WelcomeScreen extends AppCompatActivity {
@@ -16,6 +17,7 @@ public class WelcomeScreen extends AppCompatActivity {
     EditText gameCode;
     final Context myContext = this;
     private GameDB db = FirebaseDB.getInstance();
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +27,8 @@ public class WelcomeScreen extends AppCompatActivity {
         //adding context to DB
         db.initContext(this);
 
-        final Intent instructorMapScreen = new Intent(WelcomeScreen.this, InstructorMap.class);
-        //if already logged jump to the relevant screen
-        if (db.isLoggedIn() && db.isInstructor())
-            startActivity(instructorMapScreen);
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         joinGame = findViewById(R.id.joinGame);
         joinGame.setText(db.getLanguageImp().joinGame());

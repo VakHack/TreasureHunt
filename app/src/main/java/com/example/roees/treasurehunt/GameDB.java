@@ -10,7 +10,7 @@ public interface GameDB {
     boolean instructorEntrance(String instructorEmail, String instructorPassword);
     boolean downloadGame();
     boolean isInstructor();
-    boolean pushRiddle(LatLng riddle, String coordinate);
+    void pushRiddle(LatLng riddle, String coordinate);
     String getGameCode();
     Pair<LatLng, String> getRiddleByNum(Integer num);
     void removeRiddleByNum(Integer num);
@@ -20,6 +20,7 @@ public interface GameDB {
     void playerEntrance(String code);
     String downloadFeedback();
     String loginFeedback();
+    boolean didActionSucceeded();
     LanguageImp getLanguageImp();
     void login();
     void logout();
