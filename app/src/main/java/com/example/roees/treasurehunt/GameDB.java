@@ -5,14 +5,12 @@ import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.Map;
-
 public interface GameDB {
     void initContext(Context context);
     boolean instructorEntrance(String instructorEmail, String instructorPassword);
     boolean downloadGame();
     boolean isInstructor();
-    boolean editGame(Integer num, LatLng riddle, String coordinate);
+    boolean pushRiddle(LatLng riddle, String coordinate);
     String getGameCode();
     Pair<LatLng, String> getRiddleByNum(Integer num);
     void removeRiddleByNum(Integer num);

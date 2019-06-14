@@ -14,7 +14,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -157,7 +156,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 if (activatedMarker != null && !riddleLine.getText().toString().isEmpty()) {
                     int numOfRiddles = db.getNumOfRiddles() + 1;
-                    db.editGame(numOfRiddles, activatedMarker.getPosition(), riddleLine.getText().toString());
+                    db.pushRiddle(activatedMarker.getPosition(), riddleLine.getText().toString());
                     buttonsVisibility(View.INVISIBLE);
                     showInfoWindow(db.getLanguageImp().riddleTitle()+numOfRiddles,riddleLine.getText().toString());
                     activatedMarker = null;
@@ -205,9 +204,9 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         activatedMarker = marker;
         buttonsVisibility(View.VISIBLE);
+        riddleLine.setText("");
         String riddle = db.getRiddleByCoordinate(marker.getPosition());
         Integer riddleNum = db.getNumByCoordinate(marker.getPosition());
-        riddleLine.setText("");
         if (riddle != null) {
             showInfoWindow(db.getLanguageImp().riddleTitle()+riddleNum, riddle);
             riddleLine.setHint(riddle);

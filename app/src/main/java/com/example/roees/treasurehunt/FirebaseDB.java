@@ -7,7 +7,6 @@ import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,9 +91,9 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public boolean editGame(Integer num, LatLng riddle, String coordinate) {
+    public boolean pushRiddle(LatLng riddle, String coordinate) {
         Pair<LatLng, String> newRNC = new Pair<>(riddle, coordinate);
-        RNCMap.put(num, newRNC);
+        RNCMap.put(RNCMap.size()+1, newRNC);
         return fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
     }
 
@@ -167,7 +166,7 @@ public class FirebaseDB implements GameDB {
     @Override
     public String getRiddleByCoordinate(LatLng latLng) {
         for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet())
-            if(entry.getValue().first == latLng)
+            if(entry.getValue().first.equals(latLng))
                 return entry.getValue().second;
         return null;
     }
@@ -184,11 +183,11 @@ public class FirebaseDB implements GameDB {
 
     @Override
     public void removeRiddleByNum(Integer num) {
-        while(RNCMap.containsKey(num + 1)){
-            RNCMap.put(num, RNCMap.get(num + 1));
-            ++num;
-            fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
+        for(int i = num; i < RNCMap.size(); ++i){
+            RNCMap.put(i, RNCMap.get(i + 1));
         }
+        RNCMap.remove(RNCMap.size());
+        fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
     }
 
     @Override
