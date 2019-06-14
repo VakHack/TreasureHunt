@@ -2,6 +2,7 @@ package com.example.roees.treasurehunt;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -47,17 +48,26 @@ public class WelcomeScreen extends AppCompatActivity {
             }
         });
 
+        if (db.getGameCode() != "") gameCode.setText(db.getGameCode());
         final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String codeText = gameCode.getText().toString();
-                if (!codeText.isEmpty()) {
-                    db.playerEntrance(codeText);
-                    startActivity(playerMap);
-                } else {
-                    Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
-                }
+            String codeText = gameCode.getText().toString();
+            if (!codeText.isEmpty()) {
+                progressBar.setVisibility(View.VISIBLE);
+                db.playerEntrance(codeText);
+                new Thread(new Runnable() {
+                    public void run() {
+                        while (!db.downloadGame()) {
+                            SystemClock.sleep(1500);
+                        }
+                        startActivity(playerMap);
+                    }
+                }).start();
+            } else {
+                Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
+            }
             }
         });
     }

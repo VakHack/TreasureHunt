@@ -21,5 +21,6 @@ public abstract interface LanguageImp {
     public String OKButton();
     public String gameCodeCopiedSuccessfully();
     public String riddleAddedSuccessfully();
-    public String riddleAdditionFailed();
+    public String IAmHere();
+    public String cannotFindLocation();
 }

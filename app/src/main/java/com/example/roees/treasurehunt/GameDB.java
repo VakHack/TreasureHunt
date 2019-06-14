@@ -8,16 +8,17 @@ import com.google.android.gms.maps.model.LatLng;
 public interface GameDB {
     void initContext(Context context);
     boolean instructorEntrance(String instructorEmail, String instructorPassword);
+    void playerEntrance(String code);
     boolean downloadGame();
     boolean isInstructor();
     void pushRiddle(LatLng riddle, String coordinate);
     String getGameCode();
     Pair<LatLng, String> getRiddleByNum(Integer num);
+    LatLng coordinateInCloseProximity(LatLng latLng, int maxDistance);
     void removeRiddleByNum(Integer num);
     String getRiddleByCoordinate(LatLng latLng);
     Integer getNumByCoordinate(LatLng latLng);
     Integer getNumOfRiddles();
-    void playerEntrance(String code);
     String downloadFeedback();
     String loginFeedback();
     boolean didActionSucceeded();

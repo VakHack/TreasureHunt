@@ -75,7 +75,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             map.addMarker(new MarkerOptions().position(db.getRiddleByNum(i++).first));
     }
 
-    void showInfoWindow(String title, String riddle){
+    void showInfoWindow(String title, String riddle) {
         activatedMarker.setTitle(title);
         activatedMarker.setSnippet(riddle);
         activatedMarker.showInfoWindow();
@@ -131,6 +131,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
+                if(latLng==null) return;
                 String riddle = db.getRiddleByCoordinate(latLng);
                 if (riddle == null) riddleLine.setHint(DEFAULT_RIDDLE_HINT);
                 else riddleLine.setHint(riddle);
@@ -158,7 +159,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                     int numOfRiddles = db.getNumOfRiddles() + 1;
                     db.pushRiddle(activatedMarker.getPosition(), riddleLine.getText().toString());
                     buttonsVisibility(View.INVISIBLE);
-                    showInfoWindow(db.getLanguageImp().riddleTitle()+numOfRiddles,riddleLine.getText().toString());
+                    showInfoWindow(db.getLanguageImp().riddleTitle() + numOfRiddles, riddleLine.getText().toString());
                     activatedMarker = null;
                     riddleLine.setText("");
                 }
@@ -203,13 +204,14 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if(marker==null) return false;
         activatedMarker = marker;
         buttonsVisibility(View.VISIBLE);
         riddleLine.setText("");
         String riddle = db.getRiddleByCoordinate(marker.getPosition());
         Integer riddleNum = db.getNumByCoordinate(marker.getPosition());
         if (riddle != null) {
-            showInfoWindow(db.getLanguageImp().riddleTitle()+riddleNum, riddle);
+            showInfoWindow(db.getLanguageImp().riddleTitle() + riddleNum, riddle);
             riddleLine.setHint(riddle);
         } else {
             riddleLine.setHint(DEFAULT_RIDDLE_HINT);

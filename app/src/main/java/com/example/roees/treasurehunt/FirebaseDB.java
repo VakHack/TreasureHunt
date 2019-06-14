@@ -2,11 +2,11 @@ package com.example.roees.treasurehunt;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,15 +56,6 @@ public class FirebaseDB implements GameDB {
         appMap = appContext.getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
     }
 
-    private void addUserDataToSharedprefs(boolean isInstructor) {
-        appMapEditor = appMap.edit();
-        appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
-        appMapEditor.putBoolean(IS_INSTRUCTOR, isInstructor);
-        appMapEditor.putString(USER_PASSWORD, password);
-        appMapEditor.putString(USERNAME, email);
-        appMapEditor.apply();
-    }
-
     @Override
     public boolean isLoggedIn() {
         return appMap.getBoolean(LOGGED_IN_CLOUD, false);
@@ -75,6 +66,16 @@ public class FirebaseDB implements GameDB {
         return appMap.getBoolean(IS_INSTRUCTOR, false);
     }
 
+    private void addInstructorDetailsToSharedprefs() {
+        appMapEditor = appMap.edit();
+        appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
+        appMapEditor.putBoolean(IS_INSTRUCTOR, true);
+        appMapEditor.putString(USER_PASSWORD, password);
+        appMapEditor.putString(USERNAME, email);
+        appMapEditor.putString(UID, fb.getServerUID());
+        appMapEditor.apply();
+    }
+
     @Override
     public boolean instructorEntrance(String instructorEmail, String instructorPassword) {
         if (isLogged) return true;
@@ -82,11 +83,11 @@ public class FirebaseDB implements GameDB {
         password = instructorPassword;
         if (fb.tryRegister(email, password)) {
             isLogged = true;
-            addUserDataToSharedprefs(true);
+            addInstructorDetailsToSharedprefs();
             return isLogged;
         } else if (fb.tryLogin(email, password)) {
             isLogged = true;
-            addUserDataToSharedprefs(true);
+            addInstructorDetailsToSharedprefs();
             return true;
         } else return false;
     }
@@ -117,7 +118,7 @@ public class FirebaseDB implements GameDB {
 
     @Override
     public boolean downloadGame() {
-        if(fb.tryRetrieveData(fb.getServerUID())){
+        if(fb.tryRetrieveData(appMap.getString(UID, ""))){
             getSavedGame();
             return true;
         } else return false;
@@ -206,5 +207,15 @@ public class FirebaseDB implements GameDB {
     @Override
     public boolean didActionSucceeded() {
         return fb.didActionSucceeded();
+    }
+
+    @Override
+    public LatLng coordinateInCloseProximity(LatLng latLng, int maxDistance) {
+        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()){
+            if(SphericalUtil.computeDistanceBetween(entry.getValue().first, latLng) < maxDistance){
+                return entry.getValue().first;
+            }
+        }
+        return null;
     }
 }

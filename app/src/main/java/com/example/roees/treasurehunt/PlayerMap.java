@@ -23,18 +23,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
-    private Map<LatLng, String> riddlesNCoordinates = new HashMap<>();
     private Button logout;
+    private Button verifyLocation;
     private GameDB db = FirebaseDB.getInstance();
-    final Context thisMap = this;
-    private boolean wasGameLoaded = false;
-    final float ZOOM_FACTOR = 14;
+    final Context myContext = this;
+    final int MAX_DISTANCE_TO_DESTINATION = 20;
+    final float ZOOM_FACTOR = 18;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
 
@@ -44,15 +41,17 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         }
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            myLoc = new LatLng(location.getLatitude(), location.getLongitude());
-                        }
-                    }
-                });
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLoc, ZOOM_FACTOR));
+            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                if (location != null) {
+                    myLoc = new LatLng(location.getLatitude(), location.getLongitude());
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLoc, ZOOM_FACTOR));
+                } else {
+                    Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().cannotFindLocation(), Toast.LENGTH_SHORT).show();
+                }
+                }
+            });
     }
 
     void initGoogleMapUtils(GoogleMap googleMap) {
@@ -86,6 +85,9 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         logout = findViewById(R.id.logout);
+
+        verifyLocation = findViewById(R.id.verifyLocation);
+        verifyLocation.setText(db.getLanguageImp().IAmHere());
     }
 
     @Override
@@ -100,6 +102,19 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                 db.logout();
                 final Intent welcomeScreen = new Intent(PlayerMap.this, WelcomeScreen.class);
                 startActivity(welcomeScreen);
+            }
+        });
+
+        verifyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomToCurrentLocation();
+                LatLng coordinate = db.coordinateInCloseProximity(myLoc, MAX_DISTANCE_TO_DESTINATION);
+                if(coordinate!=null){
+                    Log.e("th_log", "yep");
+                } else {
+                    Log.e("th_log", "NO");
+                }
             }
         });
     }
