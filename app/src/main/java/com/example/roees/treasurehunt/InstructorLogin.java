@@ -7,8 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 public class InstructorLogin extends AppCompatActivity {
 
@@ -17,6 +16,7 @@ public class InstructorLogin extends AppCompatActivity {
     EditText email;
     final Context myContext = this;
     private GameDB db = FirebaseDB.getInstance();
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,9 @@ public class InstructorLogin extends AppCompatActivity {
         submit = findViewById(R.id.submit);
         submit.setText(db.getLanguageImp().submit());
 
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
+
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
         if(db.isInstructor()){
             db.login();
@@ -43,9 +46,16 @@ public class InstructorLogin extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            boolean isLogged = db.instructorEntrance(email.getText().toString(),password.getText().toString());
-            if(!isLogged) Toast.makeText(myContext, db.loginFeedback(), Toast.LENGTH_SHORT).show();
-            else startActivity(instructorMapScreen);
+                progressBar.setVisibility(View.VISIBLE);
+                db.instructorEntrance(email.getText().toString(),password.getText().toString());
+                while(!db.downloadGame()){
+                    try {
+                        wait(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                startActivity(instructorMapScreen);
             }
         });
     }

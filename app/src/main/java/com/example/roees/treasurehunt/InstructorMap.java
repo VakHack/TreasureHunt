@@ -123,7 +123,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         enterRiddle = findViewById(R.id.enterRiddle);
         logout = findViewById(R.id.logout);
         play = findViewById(R.id.play);
-        db.instructorDownloadGame();
+        db.downloadGame();
     }
 
     @Override
@@ -133,6 +133,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         buttonsVisibility(View.INVISIBLE);
         initGoogleMapUtils(googleMap);
         zoomToCurrentLocation();
+
+        if(!riddlesNCoordinates.isEmpty()) addSavedMarkers();
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -221,7 +223,6 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         activatedMarker = marker;
         buttonsVisibility(View.VISIBLE);
-        addSavedMarkers();
         String hint = riddlesNCoordinates.get(marker.getPosition());
         if (hint != DEFAULT_RIDDLE_HINT) {
             activatedMarker.setTitle(hint);

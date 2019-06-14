@@ -34,5 +34,12 @@
             android:text="Button"
             android:layout_marginTop="50dp"
             tools:ignore="HardcodedText,InvalidId" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

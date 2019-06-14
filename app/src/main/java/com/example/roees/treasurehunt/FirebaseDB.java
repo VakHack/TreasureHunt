@@ -95,8 +95,8 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public void instructorDownloadGame() {
-        fb.tryRetrieveData(fb.getServerUID());
+    public boolean downloadGame() {
+        return fb.tryRetrieveData(fb.getServerUID());
     }
 
     @Override
@@ -141,11 +141,6 @@ public class FirebaseDB implements GameDB {
         appMapEditor.putBoolean(IS_INSTRUCTOR, false);
         appMapEditor.putString(UID, code);
         appMapEditor.apply();
-    }
-
-    @Override
-    public void playerDownloadGame() {
-        fb.tryRetrieveData(appMap.getString(UID, ""));
     }
 
     @Override

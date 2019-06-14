@@ -3,6 +3,7 @@ package com.example.roees.treasurehunt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -16,6 +17,8 @@ import com.google.firebase.storage.UploadTask;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FirebaseServerHandler {
     private FirebaseAuth serverAuth;
@@ -89,7 +92,7 @@ public class FirebaseServerHandler {
         });
         return isSucceeded;
     }
-    public void tryRetrieveData(String uid) {
+    public boolean tryRetrieveData(String uid) {
         final long ONE_MEGABYTE = 1024 * 1024;
         StorageReference storageReference = storage.getReference().child("uploads/" + uid);
         storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -97,14 +100,18 @@ public class FirebaseServerHandler {
             public void onSuccess(byte[] bytes) {
             retrievedData = SerializationUtils.deserialize(bytes);
             storageFeedback = "Data downloaded successfully";
+            isSucceeded = true;
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
             retrievedData = null;
             storageFeedback = exception.getMessage();
+            isSucceeded = false;
             }
         });
+
+        return isSucceeded;
     }
     public Serializable getRetrievedData() {
         return retrievedData;
