@@ -3,10 +3,12 @@ package com.example.roees.treasurehunt;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -28,6 +30,7 @@ public class FirebaseDB implements GameDB {
     private Context appContext;
     private static final FirebaseDB ourInstance = new FirebaseDB();
     private final int NUMBER_OF_DOWNLOAD_ATTEMPTS = 15;
+    private Map<Integer, Pair<LatLng, String>> RNCMap = new HashMap<>();
 
     public static FirebaseDB getInstance() {
         return ourInstance;
@@ -36,6 +39,15 @@ public class FirebaseDB implements GameDB {
     private FirebaseDB() {
         fb = new FirebaseServerHandler();
         //initialize shared preferences
+    }
+
+    private void getSavedGame() {
+        for (int i = 0; i < NUMBER_OF_DOWNLOAD_ATTEMPTS; ++i) {
+            RiddlesNCoordinates newRNC = (RiddlesNCoordinates) fb.getRetrievedData();
+            if (newRNC != null) {
+                RNCMap = newRNC.get();
+            }
+        }
     }
 
     @Override
@@ -80,8 +92,10 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public boolean editGame(Map<LatLng, String> riddlesNCoordinatesR) {
-        return fb.tryUploadData(new RiddlesNCoordinates(riddlesNCoordinatesR));
+    public boolean editGame(Integer num, LatLng riddle, String coordinate) {
+        Pair<LatLng, String> newRNC = new Pair<>(riddle, coordinate);
+        RNCMap.put(num, newRNC);
+        return fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
     }
 
     @Override
@@ -96,23 +110,10 @@ public class FirebaseDB implements GameDB {
 
     @Override
     public boolean downloadGame() {
-        return fb.tryRetrieveData(fb.getServerUID());
-    }
-
-    @Override
-    public Map<LatLng, String> getSavedGame(Map<LatLng, String> RNC) {
-        Map<LatLng, String> newRNCMap = null;
-        for (int i = 0; i < NUMBER_OF_DOWNLOAD_ATTEMPTS; ++i) {
-            RiddlesNCoordinates newRNC = (RiddlesNCoordinates) fb.getRetrievedData();
-            if (newRNC != null) {
-                newRNCMap = newRNC.get();
-                for (Map.Entry<LatLng, String> entry : RNC.entrySet()) {
-                    newRNCMap.put(entry.getKey(), entry.getValue());
-                }
-                break;
-            }
-        }
-        return newRNCMap;
+        if(fb.tryRetrieveData(fb.getServerUID())){
+            getSavedGame();
+            return true;
+        } else return false;
     }
 
     @Override
@@ -156,5 +157,42 @@ public class FirebaseDB implements GameDB {
     @Override
     public String loginFeedback() {
         return fb.getLogFeedback();
+    }
+
+    @Override
+    public Pair<LatLng, String> getRiddleByNum(Integer num) {
+        return RNCMap.get(num);
+    }
+
+    @Override
+    public String getRiddleByCoordinate(LatLng latLng) {
+        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet())
+            if(entry.getValue().first == latLng)
+                return entry.getValue().second;
+        return null;
+    }
+
+    @Override
+    public Integer getNumByCoordinate(LatLng latLng) {
+        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()){
+            if(entry.getValue().first.equals(latLng)){
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void removeRiddleByNum(Integer num) {
+        while(RNCMap.containsKey(num + 1)){
+            RNCMap.put(num, RNCMap.get(num + 1));
+            ++num;
+            fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
+        }
+    }
+
+    @Override
+    public Integer getNumOfRiddles() {
+        return RNCMap.size();
     }
 }

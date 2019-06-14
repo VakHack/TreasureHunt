@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -30,13 +31,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class InstructorMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap map;
-    private Map<LatLng, String> riddlesNCoordinates = new HashMap<>();
     private Button deleteMarker;
     private Button enterRiddle;
     private Button logout;
@@ -46,7 +43,6 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private GameDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
     final Context myContext = this;
-    private boolean wasGameLoaded = false;
     final float ZOOM_FACTOR = 14;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
@@ -75,17 +71,15 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     }
 
     void addSavedMarkers() {
-        if (!wasGameLoaded) {
-            Map<LatLng, String> newRNC = db.getSavedGame(riddlesNCoordinates);
-            if (newRNC != null) {
-                riddlesNCoordinates = newRNC;
-                wasGameLoaded = true;
-                for (Map.Entry<LatLng, String> entry : riddlesNCoordinates.entrySet()) {
-                    map.addMarker(new MarkerOptions().position(entry.getKey()));
-                }
-                Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().gameLoadedSuccessfully(), Toast.LENGTH_SHORT).show();
-            }
-        }
+        int i = 1;
+        while (db.getRiddleByNum(i) != null)
+            map.addMarker(new MarkerOptions().position(db.getRiddleByNum(i++).first));
+    }
+
+    void showInfoWindow(String title, String riddle){
+        activatedMarker.setTitle(title);
+        activatedMarker.setSnippet(riddle);
+        activatedMarker.showInfoWindow();
     }
 
     void initGoogleMapUtils(GoogleMap googleMap) {
@@ -133,14 +127,14 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         buttonsVisibility(View.INVISIBLE);
         initGoogleMapUtils(googleMap);
         zoomToCurrentLocation();
-
-        if(!riddlesNCoordinates.isEmpty()) addSavedMarkers();
+        addSavedMarkers();
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if (!riddlesNCoordinates.containsKey(latLng))
-                    riddlesNCoordinates.put(latLng, DEFAULT_RIDDLE_HINT);
+                String riddle = db.getRiddleByCoordinate(latLng);
+                if (riddle == null) riddleLine.setHint(DEFAULT_RIDDLE_HINT);
+                else riddleLine.setHint(riddle);
                 activatedMarker = map.addMarker(new MarkerOptions().position(latLng));
                 buttonsVisibility(View.VISIBLE);
             }
@@ -150,22 +144,11 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 if (activatedMarker != null) {
+                    db.removeRiddleByNum(db.getNumByCoordinate(activatedMarker.getPosition()));
                     activatedMarker.remove();
-                    riddlesNCoordinates.remove(activatedMarker.getPosition());
                     activatedMarker = null;
-                    db.editGame(riddlesNCoordinates);
                     buttonsVisibility(View.INVISIBLE);
                 }
-            }
-        });
-
-        riddleLine.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    riddlesNCoordinates.put(activatedMarker.getPosition(), v.toString());
-                }
-                return false;
             }
         });
 
@@ -173,11 +156,10 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 if (activatedMarker != null && !riddleLine.getText().toString().isEmpty()) {
-                    riddlesNCoordinates.put(activatedMarker.getPosition(), riddleLine.getText().toString());
-                    db.editGame(riddlesNCoordinates);
+                    int numOfRiddles = db.getNumOfRiddles() + 1;
+                    db.editGame(numOfRiddles, activatedMarker.getPosition(), riddleLine.getText().toString());
                     buttonsVisibility(View.INVISIBLE);
-                    activatedMarker.setTitle(riddlesNCoordinates.get(activatedMarker.getPosition()));
-                    activatedMarker.showInfoWindow();
+                    showInfoWindow(db.getLanguageImp().riddleTitle()+numOfRiddles,riddleLine.getText().toString());
                     activatedMarker = null;
                 }
             }
@@ -223,13 +205,15 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         activatedMarker = marker;
         buttonsVisibility(View.VISIBLE);
-        String hint = riddlesNCoordinates.get(marker.getPosition());
-        if (hint != DEFAULT_RIDDLE_HINT) {
-            activatedMarker.setTitle(hint);
-            activatedMarker.showInfoWindow();
-        }
+        String riddle = db.getRiddleByCoordinate(marker.getPosition());
+        Integer riddleNum = db.getNumByCoordinate(marker.getPosition());
         riddleLine.setText("");
-        riddleLine.setHint(hint);
+        if (riddle != null) {
+            showInfoWindow(db.getLanguageImp().riddleTitle()+riddleNum, riddle);
+            riddleLine.setHint(riddle);
+        } else {
+            riddleLine.setHint(DEFAULT_RIDDLE_HINT);
+        }
         return false;
     }
 }

@@ -75,4 +75,9 @@ public class HebrewImp implements LanguageImp {
     public String OKButton() {
         return "אישור";
     }
+
+    @Override
+    public String riddleTitle() {
+        return "חידה מספר ";
+    }
 }

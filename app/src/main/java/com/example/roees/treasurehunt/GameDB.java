@@ -1,6 +1,7 @@
 package com.example.roees.treasurehunt;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -11,9 +12,13 @@ public interface GameDB {
     boolean instructorEntrance(String instructorEmail, String instructorPassword);
     boolean downloadGame();
     boolean isInstructor();
-    boolean editGame(Map<LatLng, String> riddlesNCoordinatesR);
+    boolean editGame(Integer num, LatLng riddle, String coordinate);
     String getGameCode();
-    Map<LatLng, String> getSavedGame(Map<LatLng, String> RNC);
+    Pair<LatLng, String> getRiddleByNum(Integer num);
+    void removeRiddleByNum(Integer num);
+    String getRiddleByCoordinate(LatLng latLng);
+    Integer getNumByCoordinate(LatLng latLng);
+    Integer getNumOfRiddles();
     void playerEntrance(String code);
     String downloadFeedback();
     String loginFeedback();

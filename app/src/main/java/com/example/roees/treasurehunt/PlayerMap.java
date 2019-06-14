@@ -55,17 +55,6 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLoc, ZOOM_FACTOR));
     }
 
-    void addSavedMarkers() {
-        if (!wasGameLoaded) {
-            Map<LatLng, String> newRNC = db.getSavedGame(riddlesNCoordinates);
-            if (newRNC != null) {
-                riddlesNCoordinates = newRNC;
-                wasGameLoaded = true;
-                Toast.makeText(thisMap, FirebaseDB.getInstance().getLanguageImp().gameLoadedSuccessfully(), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     void initGoogleMapUtils(GoogleMap googleMap) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission

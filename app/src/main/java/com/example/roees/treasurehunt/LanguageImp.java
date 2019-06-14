@@ -16,6 +16,7 @@ public abstract interface LanguageImp {
     public String addNewRiddle();
     public String gameLoadedSuccessfully();
     public String newGameCodeTitle();
+    public String riddleTitle();
     public String copyGameCodeButton();
     public String OKButton();
     public String gameCodeCopiedSuccessfully();
