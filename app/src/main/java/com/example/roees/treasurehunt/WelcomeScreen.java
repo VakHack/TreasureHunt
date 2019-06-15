@@ -18,14 +18,16 @@ import android.widget.Toast;
 public class WelcomeScreen extends AppCompatActivity {
 
     Button joinGame;
+    TextView joinGameText;
     Button instructor;
+    TextView instructorText;
     EditText gameCode;
     final Context myContext = this;
     final int CONNECTION_INTERVAL = 1000;
     final int MAX_WAIT_TIME = CONNECTION_INTERVAL * 4;
     private GameDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
-    TextView logo;
+    boolean joinButtonFlag = false;
 
     public void showToast(final String toast)
     {
@@ -49,19 +51,17 @@ public class WelcomeScreen extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
 
         joinGame = findViewById(R.id.joinGame);
-        joinGame.setText(db.getLanguageImp().joinGame());
-        joinGame.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
+        joinGameText = findViewById(R.id.joinGameText);
+        joinGameText.setText(db.getLanguageImp().joinGame());
+        joinGameText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
 
         instructor = findViewById(R.id.instructorEntrance);
-        instructor.setText(db.getLanguageImp().instructorEntrance());
-        instructor.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
+        instructorText = findViewById(R.id.instructorEntranceText);
+        instructorText.setText(db.getLanguageImp().instructorEntrance());
+        instructorText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
 
         gameCode = findViewById(R.id.gameCode);
         gameCode.setHint(db.getLanguageImp().enterGameCode());
-
-        logo = findViewById(R.id.gameLogo);
-        logo.setTextSize(100);
-        logo.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Treamd.ttf"));
 
         final Intent instructorScreen = new Intent(WelcomeScreen.this, InstructorLogin.class);
         instructor.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +76,13 @@ public class WelcomeScreen extends AppCompatActivity {
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!joinButtonFlag){
+                    joinGameText.setVisibility(View.INVISIBLE);
+                    joinButtonFlag = true;
+                    gameCode.setVisibility(View.VISIBLE);
+                    return;
+                }
+
                 progressBar.setVisibility(View.VISIBLE);
                 String codeText = gameCode.getText().toString();
                 if (!codeText.isEmpty()) {

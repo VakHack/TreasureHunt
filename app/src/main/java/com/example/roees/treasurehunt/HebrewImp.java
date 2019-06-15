@@ -8,7 +8,7 @@ public class HebrewImp implements LanguageImp {
 
     @Override
     public String joinGame() {
-        return "הצטרף למשחק";
+        return "כניסת שחקן";
     }
 
     @Override
