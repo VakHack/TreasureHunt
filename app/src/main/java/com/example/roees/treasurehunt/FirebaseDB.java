@@ -38,25 +38,16 @@ public class FirebaseDB implements GameDB {
         return ourInstance;
     }
 
-    private void debugGetMapContent(){
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()){
-            Log.e("th_log", entry+"");
+    private void debugGetMapContent() {
+        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()) {
+            Log.e("th_log", entry + "");
         }
-        Log.e("th_log", "size: "+RNCMap.size());
+        Log.e("th_log", "size: " + RNCMap.size());
     }
 
     private FirebaseDB() {
         fb = new FirebaseServerHandler();
         //initialize shared preferences
-    }
-
-    private void getSavedGame() {
-        for (int i = 0; i < NUMBER_OF_DOWNLOAD_ATTEMPTS; ++i) {
-            RiddlesNCoordinates newRNC = (RiddlesNCoordinates) fb.getRetrievedData();
-            if (newRNC != null) {
-                RNCMap = newRNC.get();
-            }
-        }
     }
 
     @Override
@@ -96,8 +87,8 @@ public class FirebaseDB implements GameDB {
     @Override
     public void pushRiddle(LatLng riddle, String coordinate) {
         Pair<LatLng, String> newRNC = new Pair<>(riddle, coordinate);
-        RNCMap.put(RNCMap.size()+1, newRNC);
-        while(!fb.tryUploadData(new RiddlesNCoordinates(RNCMap))){
+        RNCMap.put(RNCMap.size() + 1, newRNC);
+        while (!fb.tryUploadData(new RiddlesNCoordinates(RNCMap))) {
             try {
                 appContext.wait(2000);
             } catch (InterruptedException e) {
@@ -112,13 +103,20 @@ public class FirebaseDB implements GameDB {
         return languageImp;
     }
 
+    private boolean getSavedGame() {
+        RiddlesNCoordinates newRNC = (RiddlesNCoordinates) fb.getRetrievedData();
+        if (newRNC != null) {
+            RNCMap = newRNC.get();
+            return true;
+        } else return false;
+    }
+
     @Override
     public boolean downloadGame() {
         boolean isInstructor = appMap.getBoolean(IS_INSTRUCTOR, false);
         String uid = isInstructor ? appMap.getString(UID, "") : appMap.getString(PLAYER_GAME_CODE, "");
-        if(fb.tryRetrieveData(uid)){
-            getSavedGame();
-            return true;
+        if (fb.tryRetrieveData(uid)) {
+            return getSavedGame();
         } else return false;
     }
 
@@ -160,15 +158,15 @@ public class FirebaseDB implements GameDB {
     @Override
     public String getRiddleByCoordinate(LatLng latLng) {
         for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet())
-            if(entry.getValue().first.equals(latLng))
+            if (entry.getValue().first.equals(latLng))
                 return entry.getValue().second;
         return null;
     }
 
     @Override
     public Integer getNumByCoordinate(LatLng latLng) {
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()){
-            if(entry.getValue().first.equals(latLng)){
+        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()) {
+            if (entry.getValue().first.equals(latLng)) {
                 return entry.getKey();
             }
         }
@@ -177,7 +175,7 @@ public class FirebaseDB implements GameDB {
 
     @Override
     public void removeRiddleByNum(Integer num) {
-        for(int i = num; i < RNCMap.size(); ++i){
+        for (int i = num; i < RNCMap.size(); ++i) {
             RNCMap.put(i, RNCMap.get(i + 1));
         }
         RNCMap.remove(RNCMap.size());
@@ -191,8 +189,8 @@ public class FirebaseDB implements GameDB {
 
     @Override
     public LatLng coordinateInCloseProximity(LatLng latLng, int maxDistance) {
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()){
-            if(SphericalUtil.computeDistanceBetween(entry.getValue().first, latLng) < maxDistance){
+        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()) {
+            if (SphericalUtil.computeDistanceBetween(entry.getValue().first, latLng) < maxDistance) {
                 return entry.getValue().first;
             }
         }

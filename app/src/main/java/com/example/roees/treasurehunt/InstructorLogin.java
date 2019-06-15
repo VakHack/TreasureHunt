@@ -45,7 +45,6 @@ public class InstructorLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-
                 new Thread(new Runnable() {
                     public void run() {
                         while (!db.instructorEntrance(email.getText().toString(), password.getText().toString())) {
