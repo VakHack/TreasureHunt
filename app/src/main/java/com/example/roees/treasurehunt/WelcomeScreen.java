@@ -2,6 +2,7 @@ package com.example.roees.treasurehunt;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class WelcomeScreen extends AppCompatActivity {
@@ -23,6 +25,7 @@ public class WelcomeScreen extends AppCompatActivity {
     final int MAX_WAIT_TIME = CONNECTION_INTERVAL * 4;
     private GameDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
+    TextView logo;
 
     public void showToast(final String toast)
     {
@@ -47,12 +50,18 @@ public class WelcomeScreen extends AppCompatActivity {
 
         joinGame = findViewById(R.id.joinGame);
         joinGame.setText(db.getLanguageImp().joinGame());
+        joinGame.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
 
         instructor = findViewById(R.id.instructorEntrance);
         instructor.setText(db.getLanguageImp().instructorEntrance());
+        instructor.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
 
         gameCode = findViewById(R.id.gameCode);
         gameCode.setHint(db.getLanguageImp().enterGameCode());
+
+        logo = findViewById(R.id.gameLogo);
+        logo.setTextSize(100);
+        logo.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Treamd.ttf"));
 
         final Intent instructorScreen = new Intent(WelcomeScreen.this, InstructorLogin.class);
         instructor.setOnClickListener(new View.OnClickListener() {

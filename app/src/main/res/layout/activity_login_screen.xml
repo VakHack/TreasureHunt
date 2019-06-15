@@ -4,40 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WelcomeScreen"
     tools:layout_editor_absoluteY="25dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:background="@drawable/map_back"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/instructorEntrance"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/gameLogo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:layout_marginEnd="10pt"
+            android:layout_marginStart="10pt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40pt"
+            android:textSize="20pt"
+            android:text="Treasure Hunt"
+            android:textColor="#2d2f32"
+            android:textAlignment="center"
             tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/gameCode"
-            android:layout_width="match_parent"
+            android:layout_width="130pt"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"/>
+            android:layout_marginTop="30pt"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/gameLogo"
+            android:textSize="6pt" />
 
         <Button
             android:id="@+id/joinGame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="130pt"
+            android:layout_height="30pt"
+            android:layout_marginTop="5pt"
+            android:layout_below="@id/gameCode"
+            android:layout_centerHorizontal="true"
             android:text="Button"
+            android:textSize="10pt"
+            android:textStyle="bold"
+            android:background="@drawable/map_bottons"
+            android:textColor="#EEE0BB"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/instructorEntrance"
+            android:layout_width="130pt"
+            android:layout_height="30pt"
+            android:layout_below="@id/joinGame"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5pt"
+            android:text="Button"
+            android:textSize="10pt"
+            android:textStyle="bold"
+            android:background="@drawable/map_bottons"
+            android:textColor="#EEE0BB"
             tools:ignore="HardcodedText" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-    </LinearLayout>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="8pt"
+            android:layout_marginBottom="8pt" />
+
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

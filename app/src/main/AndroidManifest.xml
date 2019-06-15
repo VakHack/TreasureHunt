@@ -34,20 +34,25 @@
 
         <activity
             android:name=".PlayerMap"
-            android:label="@string/title_activity_player_map"></activity>
+            android:label="@string/title_activity_player_map"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".InstructorMap"
             android:label="@string/title_activity_instructor_map"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".WelcomeScreen">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".WelcomeScreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InstructorLogin" />
+        <activity
+            android:name=".InstructorLogin"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
