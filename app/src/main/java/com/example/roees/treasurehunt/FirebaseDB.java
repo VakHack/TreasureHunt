@@ -2,6 +2,7 @@ package com.example.roees.treasurehunt;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class FirebaseDB implements GameDB {
     private String IS_INSTRUCTOR = "IS_INSTRUCTOR";
     private String SHARED_PREFS = "SHARED_PREFS";
     private String UID = "UID";
+    private String PLAYER_CURRENT_RIDDLE = "PLAYER_CURRENT_RIDDLE";
     private Context appContext;
     private static final FirebaseDB ourInstance = new FirebaseDB();
     private final int NUMBER_OF_DOWNLOAD_ATTEMPTS = 15;
@@ -34,6 +36,13 @@ public class FirebaseDB implements GameDB {
 
     public static FirebaseDB getInstance() {
         return ourInstance;
+    }
+
+    private void debugGetMapContent(){
+        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()){
+            Log.e("th_log", entry+"");
+        }
+        Log.e("th_log", "size: "+RNCMap.size());
     }
 
     private FirebaseDB() {
@@ -59,11 +68,6 @@ public class FirebaseDB implements GameDB {
     @Override
     public boolean isLoggedIn() {
         return appMap.getBoolean(LOGGED_IN_CLOUD, false);
-    }
-
-    @Override
-    public boolean isInstructor() {
-        return appMap.getBoolean(IS_INSTRUCTOR, false);
     }
 
     private void addInstructorDetailsToSharedprefs() {
@@ -112,23 +116,11 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public String downloadFeedback() {
-        return fb.getStorageFeedback();
-    }
-
-    @Override
     public boolean downloadGame() {
         if(fb.tryRetrieveData(appMap.getString(UID, ""))){
             getSavedGame();
             return true;
         } else return false;
-    }
-
-    @Override
-    public void login() {
-        appMapEditor = appMap.edit();
-        appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
-        appMapEditor.apply();
     }
 
     @Override
@@ -163,13 +155,8 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public String loginFeedback() {
-        return fb.getLogFeedback();
-    }
-
-    @Override
-    public Pair<LatLng, String> getRiddleByNum(Integer num) {
-        return RNCMap.get(num);
+    public LatLng getCoordinationByNum(Integer num) {
+        return RNCMap.get(num).first;
     }
 
     @Override
@@ -205,11 +192,6 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public boolean didActionSucceeded() {
-        return fb.didActionSucceeded();
-    }
-
-    @Override
     public LatLng coordinateInCloseProximity(LatLng latLng, int maxDistance) {
         for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()){
             if(SphericalUtil.computeDistanceBetween(entry.getValue().first, latLng) < maxDistance){
@@ -217,5 +199,17 @@ public class FirebaseDB implements GameDB {
             }
         }
         return null;
+    }
+
+    @Override
+    public void setPlayerCurrentRiddle(int num) {
+        appMapEditor = appMap.edit();
+        appMapEditor.putInt(PLAYER_CURRENT_RIDDLE, num);
+        appMapEditor.apply();
+    }
+
+    @Override
+    public int getPlayerCurrentRiddle() {
+        return appMap.getInt(PLAYER_CURRENT_RIDDLE, 0);
     }
 }

@@ -23,4 +23,5 @@ public abstract interface LanguageImp {
     public String riddleAddedSuccessfully();
     public String IAmHere();
     public String cannotFindLocation();
+    public String notInLocation();
 }

@@ -70,9 +70,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     }
 
     void addSavedMarkers() {
-        int i = 1;
-        while (db.getRiddleByNum(i) != null)
-            map.addMarker(new MarkerOptions().position(db.getRiddleByNum(i++).first));
+        for(int i=1; i <=db.getNumOfRiddles();++i)
+            map.addMarker(new MarkerOptions().position(db.getCoordinationByNum(i++)));
     }
 
     void showInfoWindow(String title, String riddle) {

@@ -100,4 +100,9 @@ public class HebrewImp implements LanguageImp {
     public String cannotFindLocation() {
         return "לא מצליח למצוא את מיקומך, אנא נסה שנית";
     }
+
+    @Override
+    public String notInLocation() {
+        return "עדיין לא שם!";
+    }
 }

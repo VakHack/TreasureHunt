@@ -20,7 +20,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
@@ -30,7 +32,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
     private Button verifyLocation;
     private GameDB db = FirebaseDB.getInstance();
     final Context myContext = this;
-    final int MAX_DISTANCE_TO_DESTINATION = 20;
+    final int MAX_DISTANCE_TO_DESTINATION = 50;
     final float ZOOM_FACTOR = 18;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
@@ -111,9 +113,10 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                 zoomToCurrentLocation();
                 LatLng coordinate = db.coordinateInCloseProximity(myLoc, MAX_DISTANCE_TO_DESTINATION);
                 if(coordinate!=null){
-                    Log.e("th_log", "yep");
+                    map.addMarker(new MarkerOptions().position(coordinate).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag_icon)));
+                    db.setPlayerCurrentRiddle(db.getNumByCoordinate(coordinate));
                 } else {
-                    Log.e("th_log", "NO");
+                    Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().notInLocation(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
