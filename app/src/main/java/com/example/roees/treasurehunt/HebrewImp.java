@@ -110,4 +110,14 @@ public class HebrewImp implements LanguageImp {
     public String wrongCode() {
         return "קוד שגוי, נסה שנית";
     }
+
+    @Override
+    public String congratulations() {
+        return "כל הכבוד!";
+    }
+
+    @Override
+    public String finishedSuccessfully() {
+        return "האוצר שלך";
+    }
 }

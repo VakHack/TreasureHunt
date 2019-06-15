@@ -198,14 +198,14 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public void setPlayerCurrentRiddle(int num) {
+    public void setPlayerCurrentMarker(int num) {
         appMapEditor = appMap.edit();
         appMapEditor.putInt(PLAYER_CURRENT_MARKER, num);
         appMapEditor.apply();
     }
 
     @Override
-    public int getPlayerCurrentRiddle() {
+    public int getPlayerCurrentMarker() {
         return appMap.getInt(PLAYER_CURRENT_MARKER, 0);
     }
 

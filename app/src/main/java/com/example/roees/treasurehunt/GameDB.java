@@ -20,8 +20,8 @@ public interface GameDB {
     //player functions
     void playerEntrance(String code);
     LatLng coordinateInCloseProximity(LatLng latLng, int maxDistance);
-    void setPlayerCurrentRiddle(int num);
-    int getPlayerCurrentRiddle();
+    void setPlayerCurrentMarker(int num);
+    int getPlayerCurrentMarker();
     void setPlayerGameCode(String code);
     String getPlayerGameCode();
 

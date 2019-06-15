@@ -1,7 +1,9 @@
 package com.example.roees.treasurehunt;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -28,6 +30,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
     private Button logout;
+    private Button riddle;
     private Button verifyLocation;
     private GameDB db = FirebaseDB.getInstance();
     final Context myContext = this;
@@ -78,7 +81,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
     }
 
     void addMarkersUntilCurrentMarker() {
-        for (int i = 1; i <= db.getPlayerCurrentRiddle(); ++i) {
+        for (int i = 1; i <= db.getPlayerCurrentMarker(); ++i) {
             LatLng coordinate = db.getCoordinationByNum(i);
             addRelevantMarker(i, coordinate);
         }
@@ -100,7 +103,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         logout = findViewById(R.id.logout);
-
+        riddle = findViewById(R.id.riddle);
         verifyLocation = findViewById(R.id.verifyLocation);
         verifyLocation.setText(db.getLanguageImp().IAmHere());
     }
@@ -121,6 +124,26 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
             }
         });
 
+        riddle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = db.getPlayerCurrentMarker() > db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + db.getPlayerCurrentMarker() + 1
+                        : db.getLanguageImp().congratulations();
+                String message = db.getPlayerCurrentMarker() > db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker()))
+                        : db.getLanguageImp().finishedSuccessfully();
+                AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
+                alertDialog.setTitle(title);
+                alertDialog.setMessage(message);
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+
         verifyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,7 +152,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                 if (coordinate != null) {
                     int numOfRiddle = db.getNumByCoordinate(coordinate);
                     addRelevantMarker(numOfRiddle, coordinate);
-                    db.setPlayerCurrentRiddle(numOfRiddle);
+                    db.setPlayerCurrentMarker(numOfRiddle);
                 } else {
                     Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().notInLocation(), Toast.LENGTH_SHORT).show();
                 }
