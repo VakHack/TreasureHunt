@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.SystemClock;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +26,8 @@ public class WelcomeScreen extends AppCompatActivity {
     private GameDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
     boolean joinButtonFlag = false;
+    final private String BUTTONS_FONT = "fonts/Nehama.ttf";
+    final private int TEXT_SIZE = 40;
 
     public void showToast(final String toast)
     {
@@ -53,12 +53,14 @@ public class WelcomeScreen extends AppCompatActivity {
         joinGame = findViewById(R.id.joinGame);
         joinGameText = findViewById(R.id.joinGameText);
         joinGameText.setText(db.getLanguageImp().joinGame());
-        joinGameText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
+        joinGameText.setTextSize(TEXT_SIZE);
+        joinGameText.setTypeface(Typeface.createFromAsset(getAssets(), BUTTONS_FONT));
 
         instructor = findViewById(R.id.instructorEntrance);
         instructorText = findViewById(R.id.instructorEntranceText);
         instructorText.setText(db.getLanguageImp().instructorEntrance());
-        instructorText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Daniel.ttf"));
+        instructorText.setTextSize(TEXT_SIZE);
+        instructorText.setTypeface(Typeface.createFromAsset(getAssets(), BUTTONS_FONT));
 
         gameCode = findViewById(R.id.gameCode);
         gameCode.setHint(db.getLanguageImp().enterGameCode());

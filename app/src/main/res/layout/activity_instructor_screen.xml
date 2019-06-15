@@ -9,14 +9,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="40dp">
 
         <EditText
             android:id="@+id/email"
             android:imeActionLabel="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:textAlignment="center"
+            android:background="@drawable/join_game_textbox"
             android:layout_marginTop="150dp"/>
 
         <EditText
@@ -25,21 +28,27 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="50dp"/>
+            android:textAlignment="center"
+            android:background="@drawable/join_game_textbox"
+            android:layout_marginTop="15dp"/>
 
         <Button
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button"
-            android:layout_marginTop="50dp"
-            tools:ignore="HardcodedText,InvalidId" />
+            android:background="@android:color/transparent"
+            android:layout_marginTop="35dp"
+            android:drawableTop="@drawable/baseline_play_circle_filled_black_48"
+            android:drawableTint="@color/quantum_grey800"
+            tools:ignore="RtlHardcoded" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_marginTop="50dp"
-            android:layout_height="wrap_content"
-            />
+            android:layout_width="30pt"
+            android:indeterminateTint="@color/quantum_bluegrey900"
+            android:indeterminateTintMode="src_in"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10pt"
+            android:layout_marginBottom="10pt" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -34,7 +34,6 @@ public class InstructorLogin extends AppCompatActivity {
         if (db.getSavedUsername() != "") email.setText(db.getSavedUsername());
 
         submit = findViewById(R.id.submit);
-        submit.setText(db.getLanguageImp().submit());
 
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.INVISIBLE);
