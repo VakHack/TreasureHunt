@@ -9,7 +9,6 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -43,17 +42,17 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         }
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
-            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                if (location != null) {
-                    myLoc = new LatLng(location.getLatitude(), location.getLongitude());
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLoc, ZOOM_FACTOR));
-                } else {
-                    Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().cannotFindLocation(), Toast.LENGTH_SHORT).show();
-                }
-                }
-            });
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            myLoc = new LatLng(location.getLatitude(), location.getLongitude());
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLoc, ZOOM_FACTOR));
+                        } else {
+                            Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().cannotFindLocation(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     void initGoogleMapUtils(GoogleMap googleMap) {
@@ -78,6 +77,20 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
+    void addMarkersUntilCurrentMarker() {
+        for (int i = 1; i <= db.getPlayerCurrentRiddle(); ++i) {
+            LatLng coordinate = db.getCoordinationByNum(i);
+            addRelevantMarker(i, coordinate);
+        }
+    }
+
+    void addRelevantMarker(int num, LatLng coordinate) {
+        if (num < db.getNumOfRiddles())
+            map.addMarker(new MarkerOptions().position(coordinate).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag_icon)));
+        else
+            map.addMarker(new MarkerOptions().position(coordinate).icon(BitmapDescriptorFactory.fromResource(R.drawable.treasure_icon)));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +110,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         map = googleMap;
         initGoogleMapUtils(googleMap);
         zoomToCurrentLocation();
+        addMarkersUntilCurrentMarker();
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,9 +126,10 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
             public void onClick(View v) {
                 zoomToCurrentLocation();
                 LatLng coordinate = db.coordinateInCloseProximity(myLoc, MAX_DISTANCE_TO_DESTINATION);
-                if(coordinate!=null){
-                    map.addMarker(new MarkerOptions().position(coordinate).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag_icon)));
-                    db.setPlayerCurrentRiddle(db.getNumByCoordinate(coordinate));
+                if (coordinate != null) {
+                    int numOfRiddle = db.getNumByCoordinate(coordinate);
+                    addRelevantMarker(numOfRiddle, coordinate);
+                    db.setPlayerCurrentRiddle(numOfRiddle);
                 } else {
                     Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().notInLocation(), Toast.LENGTH_SHORT).show();
                 }

@@ -24,4 +24,5 @@ public abstract interface LanguageImp {
     public String IAmHere();
     public String cannotFindLocation();
     public String notInLocation();
+    public String wrongCode();
 }

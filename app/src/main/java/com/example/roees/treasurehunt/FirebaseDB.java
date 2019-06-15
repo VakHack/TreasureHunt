@@ -18,7 +18,6 @@ public class FirebaseDB implements GameDB {
     private FirebaseServerHandler fb;
     private String email;
     private String password;
-    private boolean isLogged = false;
     private LanguageImp languageImp = new HebrewImp();
     private SharedPreferences appMap;
     private SharedPreferences.Editor appMapEditor;
@@ -28,7 +27,8 @@ public class FirebaseDB implements GameDB {
     private String IS_INSTRUCTOR = "IS_INSTRUCTOR";
     private String SHARED_PREFS = "SHARED_PREFS";
     private String UID = "UID";
-    private String PLAYER_CURRENT_RIDDLE = "PLAYER_CURRENT_RIDDLE";
+    private String PLAYER_GAME_CODE = "PLAYER_GAME_CODE";
+    private String PLAYER_CURRENT_MARKER = "PLAYER_CURRENT_MARKER";
     private Context appContext;
     private static final FirebaseDB ourInstance = new FirebaseDB();
     private final int NUMBER_OF_DOWNLOAD_ATTEMPTS = 15;
@@ -72,7 +72,6 @@ public class FirebaseDB implements GameDB {
 
     private void addInstructorDetailsToSharedprefs() {
         appMapEditor = appMap.edit();
-        appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
         appMapEditor.putBoolean(IS_INSTRUCTOR, true);
         appMapEditor.putString(USER_PASSWORD, password);
         appMapEditor.putString(USERNAME, email);
@@ -82,18 +81,16 @@ public class FirebaseDB implements GameDB {
 
     @Override
     public boolean instructorEntrance(String instructorEmail, String instructorPassword) {
-        if (isLogged) return true;
         email = instructorEmail;
         password = instructorPassword;
-        if (fb.tryRegister(email, password)) {
-            isLogged = true;
+
+        if (fb.tryRegister(email, password))
             addInstructorDetailsToSharedprefs();
-            return isLogged;
-        } else if (fb.tryLogin(email, password)) {
-            isLogged = true;
+        else if (fb.tryLogin(email, password))
             addInstructorDetailsToSharedprefs();
-            return true;
-        } else return false;
+        else return false;
+
+        return true;
     }
 
     @Override
@@ -117,7 +114,9 @@ public class FirebaseDB implements GameDB {
 
     @Override
     public boolean downloadGame() {
-        if(fb.tryRetrieveData(appMap.getString(UID, ""))){
+        boolean isInstructor = appMap.getBoolean(IS_INSTRUCTOR, false);
+        String uid = isInstructor ? appMap.getString(UID, "") : appMap.getString(PLAYER_GAME_CODE, "");
+        if(fb.tryRetrieveData(uid)){
             getSavedGame();
             return true;
         } else return false;
@@ -126,19 +125,18 @@ public class FirebaseDB implements GameDB {
     @Override
     public void logout() {
         appMapEditor = appMap.edit();
-        appMapEditor.putBoolean(LOGGED_IN_CLOUD, false);
+        appMapEditor.putBoolean(IS_INSTRUCTOR, false);
         appMapEditor.apply();
     }
 
     @Override
-    public String getGameCode() {
+    public String getInstructorGameCode() {
         return fb.getServerUID();
     }
 
     @Override
     public void playerEntrance(String code) {
         appMapEditor = appMap.edit();
-        appMapEditor.putBoolean(LOGGED_IN_CLOUD, true);
         appMapEditor.putBoolean(IS_INSTRUCTOR, false);
         appMapEditor.putString(UID, code);
         appMapEditor.apply();
@@ -204,12 +202,24 @@ public class FirebaseDB implements GameDB {
     @Override
     public void setPlayerCurrentRiddle(int num) {
         appMapEditor = appMap.edit();
-        appMapEditor.putInt(PLAYER_CURRENT_RIDDLE, num);
+        appMapEditor.putInt(PLAYER_CURRENT_MARKER, num);
         appMapEditor.apply();
     }
 
     @Override
     public int getPlayerCurrentRiddle() {
-        return appMap.getInt(PLAYER_CURRENT_RIDDLE, 0);
+        return appMap.getInt(PLAYER_CURRENT_MARKER, 0);
+    }
+
+    @Override
+    public void setPlayerGameCode(String code) {
+        appMapEditor = appMap.edit();
+        appMapEditor.putString(PLAYER_GAME_CODE, code);
+        appMapEditor.apply();
+    }
+
+    @Override
+    public String getPlayerGameCode() {
+        return appMap.getString(PLAYER_GAME_CODE, "");
     }
 }

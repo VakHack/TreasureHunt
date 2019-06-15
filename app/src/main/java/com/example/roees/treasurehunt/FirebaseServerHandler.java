@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class FirebaseServerHandler {
     private FirebaseAuth serverAuth;
-    private boolean isSucceeded;
+    private boolean isSucceeded = false;
     private FirebaseStorage storage;
     private Serializable retrievedData;
     private String logFeedback;
@@ -106,8 +106,8 @@ public class FirebaseServerHandler {
             @Override
             public void onFailure(@NonNull Exception exception) {
             retrievedData = null;
-            storageFeedback = exception.getMessage();
             isSucceeded = false;
+            storageFeedback = exception.getMessage();
             }
         });
 

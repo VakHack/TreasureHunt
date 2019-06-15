@@ -13,7 +13,6 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +70,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
 
     void addSavedMarkers() {
         for(int i=1; i <=db.getNumOfRiddles();++i)
-            map.addMarker(new MarkerOptions().position(db.getCoordinationByNum(i++)));
+            map.addMarker(new MarkerOptions().position(db.getCoordinationByNum(i)));
     }
 
     void showInfoWindow(String title, String riddle) {
@@ -179,7 +178,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
                 alertDialog.setTitle(db.getLanguageImp().newGameCodeTitle());
-                alertDialog.setMessage(db.getGameCode());
+                alertDialog.setMessage(db.getInstructorGameCode());
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -191,7 +190,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                             public void onClick(DialogInterface dialog, int which) {
                                 //copy code to clipboard
                                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("game code", db.getGameCode());
+                                ClipData clip = ClipData.newPlainText("game code", db.getInstructorGameCode());
                                 clipboard.setPrimaryClip(clip);
                                 Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().gameCodeCopiedSuccessfully(), Toast.LENGTH_SHORT).show();
                             }

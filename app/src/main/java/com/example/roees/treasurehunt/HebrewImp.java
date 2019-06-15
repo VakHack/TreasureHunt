@@ -105,4 +105,9 @@ public class HebrewImp implements LanguageImp {
     public String notInLocation() {
         return "עדיין לא שם!";
     }
+
+    @Override
+    public String wrongCode() {
+        return "קוד שגוי, נסה שנית";
+    }
 }

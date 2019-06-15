@@ -13,6 +13,7 @@ public interface GameDB {
     String getRiddleByCoordinate(LatLng latLng);
     Integer getNumByCoordinate(LatLng latLng);
     Integer getNumOfRiddles();
+    String getInstructorGameCode();
     void logout();
     boolean isLoggedIn();
 
@@ -21,11 +22,12 @@ public interface GameDB {
     LatLng coordinateInCloseProximity(LatLng latLng, int maxDistance);
     void setPlayerCurrentRiddle(int num);
     int getPlayerCurrentRiddle();
+    void setPlayerGameCode(String code);
+    String getPlayerGameCode();
 
     //general functions
     LanguageImp getLanguageImp();
     void initContext(Context context);
-    String getGameCode();
     String getSavedUsername();
     String getSavedPassword();
 }
