@@ -143,7 +143,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 if (activatedMarker != null) {
-                    db.removeRiddleByNum(db.getNumByCoordinate(activatedMarker.getPosition()));
+                    Integer riddleNum = db.getNumByCoordinate(activatedMarker.getPosition());
+                    if(riddleNum!=null)db.removeRiddleByNum(riddleNum);
                     activatedMarker.remove();
                     activatedMarker = null;
                     buttonsVisibility(View.INVISIBLE);

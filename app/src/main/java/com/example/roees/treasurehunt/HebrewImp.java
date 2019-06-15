@@ -93,7 +93,7 @@ public class HebrewImp implements LanguageImp {
 
     @Override
     public String IAmHere() {
-        return "הגעתי!";
+        return "הגעתי";
     }
 
     @Override

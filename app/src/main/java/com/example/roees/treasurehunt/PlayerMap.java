@@ -35,7 +35,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
     private GameDB db = FirebaseDB.getInstance();
     final Context myContext = this;
     final int MAX_DISTANCE_TO_DESTINATION = 50;
-    final float ZOOM_FACTOR = 18;
+    final float ZOOM_FACTOR = 20;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
 
@@ -127,9 +127,9 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         riddle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = db.getPlayerCurrentMarker() > db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + db.getPlayerCurrentMarker() + 1
+                String title = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + (db.getPlayerCurrentMarker() + 1)
                         : db.getLanguageImp().congratulations();
-                String message = db.getPlayerCurrentMarker() > db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker()))
+                String message = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker()))
                         : db.getLanguageImp().finishedSuccessfully();
                 AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
                 alertDialog.setTitle(title);
