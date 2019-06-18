@@ -6,13 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -127,6 +131,8 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         riddle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ImageView image = new ImageView(myContext);
+                image.setImageResource(R.drawable.old_page);
                 String title = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + (db.getPlayerCurrentMarker() + 1)
                         : db.getLanguageImp().congratulations();
                 String message = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker()))
@@ -134,6 +140,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                 AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
                 alertDialog.setTitle(title);
                 alertDialog.setMessage(message);
+                alertDialog.setView(image);
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -153,6 +160,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                     int numOfRiddle = db.getNumByCoordinate(coordinate);
                     addRelevantMarker(numOfRiddle, coordinate);
                     db.setPlayerCurrentMarker(numOfRiddle);
+                    riddle.performClick();
                 } else {
                     Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().notInLocation(), Toast.LENGTH_SHORT).show();
                 }
