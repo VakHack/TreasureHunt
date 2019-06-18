@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -48,6 +49,7 @@ public class FirebaseDB implements TreasureHuntDB {
     private FirebaseDB() {
         fb = new FirebaseServerHandler();
         //initialize shared preferences
+        if(Locale.getDefault().getDisplayLanguage()==)
     }
 
     @Override
