@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class FirebaseDB implements GameDB {
+public class FirebaseDB implements TreasureHuntDB {
     private FirebaseServerHandler fb;
     private String email;
     private String password;
@@ -64,14 +64,12 @@ public class FirebaseDB implements GameDB {
     private void addInstructorDetailsToSharedprefs() {
         appMapEditor = appMap.edit();
         appMapEditor.putBoolean(IS_INSTRUCTOR, true);
-        appMapEditor.putString(USER_PASSWORD, password);
-        appMapEditor.putString(USERNAME, email);
         appMapEditor.putString(UID, fb.getServerUID());
         appMapEditor.apply();
     }
 
     @Override
-    public boolean instructorEntrance(String instructorEmail, String instructorPassword) {
+    public boolean login(String instructorEmail, String instructorPassword) {
         email = instructorEmail;
         password = instructorPassword;
 
@@ -112,7 +110,7 @@ public class FirebaseDB implements GameDB {
     }
 
     @Override
-    public boolean downloadGame() {
+    public boolean downloadGameData() {
         boolean isInstructor = appMap.getBoolean(IS_INSTRUCTOR, false);
         String uid = isInstructor ? appMap.getString(UID, "") : appMap.getString(PLAYER_GAME_CODE, "");
         if (fb.tryRetrieveData(uid)) {
@@ -219,5 +217,11 @@ public class FirebaseDB implements GameDB {
     @Override
     public String getPlayerGameCode() {
         return appMap.getString(PLAYER_GAME_CODE, "");
+    }
+
+    @Override
+    public void saveInstructorDetails(String instructorEmail, String instructorPassword) {
+        appMapEditor.putString(USER_PASSWORD, instructorEmail);
+        appMapEditor.putString(USERNAME, instructorPassword);
     }
 }

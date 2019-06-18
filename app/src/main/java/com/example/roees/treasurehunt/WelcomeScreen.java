@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,9 +21,7 @@ public class WelcomeScreen extends AppCompatActivity {
     TextView instructorText;
     EditText gameCode;
     final Context myContext = this;
-    final int CONNECTION_INTERVAL = 1000;
-    final int MAX_WAIT_TIME = CONNECTION_INTERVAL * 4;
-    private GameDB db = FirebaseDB.getInstance();
+    private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
     boolean joinButtonFlag = false;
     final private String BUTTONS_FONT = "fonts/Nehama.ttf";
@@ -44,6 +41,10 @@ public class WelcomeScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
+
+        final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
+        final LoadingHandler loadingHandler = new LoadingHandler(1000,
+                4, db, myContext, playerMap, false);
 
         //adding context to DB
         db.initContext(this);
@@ -75,36 +76,16 @@ public class WelcomeScreen extends AppCompatActivity {
         });
 
         if (db.getPlayerGameCode() != "") gameCode.setText(db.getPlayerGameCode());
-        final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!joinButtonFlag){
-                    joinGameText.setVisibility(View.INVISIBLE);
-                    joinButtonFlag = true;
-                    gameCode.setVisibility(View.VISIBLE);
-                    return;
-                }
-
                 progressBar.setVisibility(View.VISIBLE);
                 String codeText = gameCode.getText().toString();
                 if (!codeText.isEmpty()) {
                     db.setPlayerGameCode(codeText);
                     db.playerEntrance(codeText);
-                    new Thread(new Runnable() {
-                        public void run() {
-                            int currentWaitTime = 0;
-                            while (!db.downloadGame() && currentWaitTime <= MAX_WAIT_TIME) {
-                                SystemClock.sleep(CONNECTION_INTERVAL);
-                                currentWaitTime += CONNECTION_INTERVAL;
-                            }
-                            if (currentWaitTime < MAX_WAIT_TIME) startActivity(playerMap);
-                            else {
-                                showToast(FirebaseDB.getInstance().getLanguageImp().wrongCode());
-                                progressBar.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    }).start();
+                    loadingHandler.waitUntilLoaded(FirebaseDB.getInstance().getLanguageImp().wrongCode());
+                    progressBar.setVisibility(View.INVISIBLE);
                 } else {
                     Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
                 }

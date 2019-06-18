@@ -13,7 +13,6 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +38,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private Button play;
     private Marker activatedMarker = null;
     private EditText riddleLine;
-    private GameDB db = FirebaseDB.getInstance();
+    private TreasureHuntDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
     final Context myContext = this;
     final float ZOOM_FACTOR = 14;
@@ -115,7 +114,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         enterRiddle = findViewById(R.id.enterRiddle);
         logout = findViewById(R.id.logout);
         play = findViewById(R.id.play);
-        db.downloadGame();
+        db.downloadGameData();
     }
 
     @Override

@@ -3,10 +3,11 @@ import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public interface GameDB {
+public interface TreasureHuntDB {
     //instructor functions
-    boolean instructorEntrance(String instructorEmail, String instructorPassword);
-    boolean downloadGame();
+    void saveInstructorDetails(String instructorEmail, String instructorPassword);
+    boolean login(String instructorEmail, String instructorPassword);
+    boolean downloadGameData();
     void pushRiddle(LatLng riddle, String coordinate);
     LatLng getCoordinationByNum(Integer num);
     void removeRiddleByNum(Integer num);

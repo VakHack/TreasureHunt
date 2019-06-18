@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 public class InstructorLogin extends AppCompatActivity {
 
@@ -17,7 +17,7 @@ public class InstructorLogin extends AppCompatActivity {
     EditText password;
     EditText email;
     final Context myContext = this;
-    private GameDB db = FirebaseDB.getInstance();
+    private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
 
     @Override
@@ -39,22 +39,22 @@ public class InstructorLogin extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
 
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
+        final LoadingHandler loadingHandler = new LoadingHandler(1000, 4,
+                db, myContext, instructorMapScreen, true);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                new Thread(new Runnable() {
-                    public void run() {
-                        while (!db.instructorEntrance(email.getText().toString(), password.getText().toString())) {
-                            SystemClock.sleep(1500);
-                        }
-                        while (!db.downloadGame()) {
-                            SystemClock.sleep(1500);
-                        }
-                        startActivity(instructorMapScreen);
-                    }
-                }).start();
+                String currentEmail = email.getText().toString();
+                String currentPassword = password.getText().toString();
+                if(!currentEmail.isEmpty() && !currentPassword.isEmpty()){
+                    db.saveInstructorDetails(currentEmail, currentPassword);
+                    progressBar.setVisibility(View.VISIBLE);
+                    loadingHandler.waitUntilLoaded();
+                    progressBar.setVisibility(View.INVISIBLE);
+                } else {
+                Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
+            }
             }
         });
     }
