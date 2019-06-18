@@ -17,6 +17,7 @@ public interface TreasureHuntDB {
     String getInstructorGameCode();
     void logout();
     boolean isLoggedIn();
+    boolean isDownloadSucceeded();
 
     //player functions
     void playerEntrance(String code);

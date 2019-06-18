@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,10 +38,9 @@ public class InstructorLogin extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.INVISIBLE);
-
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
         final LoadingHandler loadingHandler = new LoadingHandler(1000, 4,
-                db, myContext, instructorMapScreen, true);
+                db, myContext, instructorMapScreen, true, progressBar);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,9 +49,7 @@ public class InstructorLogin extends AppCompatActivity {
                 String currentPassword = password.getText().toString();
                 if(!currentEmail.isEmpty() && !currentPassword.isEmpty()){
                     db.saveInstructorDetails(currentEmail, currentPassword);
-                    progressBar.setVisibility(View.VISIBLE);
                     loadingHandler.waitUntilLoaded();
-                    progressBar.setVisibility(View.INVISIBLE);
                 } else {
                 Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
             }

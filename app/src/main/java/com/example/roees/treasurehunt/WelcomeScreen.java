@@ -3,7 +3,6 @@ package com.example.roees.treasurehunt;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,15 +14,15 @@ import android.widget.Toast;
 
 public class WelcomeScreen extends AppCompatActivity {
 
-    Button joinGame;
+    Button joinGameButton;
     TextView joinGameText;
     Button instructor;
     TextView instructorText;
-    EditText gameCode;
+    Button enterCodeButton;
+    EditText gameCodeLine;
     final Context myContext = this;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
-    boolean joinButtonFlag = false;
     final private String BUTTONS_FONT = "fonts/Nehama.ttf";
     final private int TEXT_SIZE = 40;
 
@@ -42,17 +41,17 @@ public class WelcomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
-        final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
-        final LoadingHandler loadingHandler = new LoadingHandler(1000,
-                4, db, myContext, playerMap, false);
-
         //adding context to DB
         db.initContext(this);
 
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        joinGame = findViewById(R.id.joinGame);
+        final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
+        final LoadingHandler loadingHandler = new LoadingHandler(1500,
+                5, db, myContext, playerMap, false, progressBar);
+
+        joinGameButton = findViewById(R.id.joinGame);
         joinGameText = findViewById(R.id.joinGameText);
         joinGameText.setText(db.getLanguageImp().joinGame());
         joinGameText.setTextSize(TEXT_SIZE);
@@ -64,8 +63,10 @@ public class WelcomeScreen extends AppCompatActivity {
         instructorText.setTextSize(TEXT_SIZE);
         instructorText.setTypeface(Typeface.createFromAsset(getAssets(), BUTTONS_FONT));
 
-        gameCode = findViewById(R.id.gameCode);
-        gameCode.setHint(db.getLanguageImp().enterGameCode());
+        gameCodeLine = findViewById(R.id.gameCodeLine);
+        gameCodeLine.setHint(db.getLanguageImp().enterGameCode());
+        enterCodeButton = findViewById(R.id.enterCode);
+        enterCodeButton.setVisibility(View.INVISIBLE);
 
         final Intent instructorScreen = new Intent(WelcomeScreen.this, InstructorLogin.class);
         instructor.setOnClickListener(new View.OnClickListener() {
@@ -75,12 +76,20 @@ public class WelcomeScreen extends AppCompatActivity {
             }
         });
 
-        if (db.getPlayerGameCode() != "") gameCode.setText(db.getPlayerGameCode());
-        joinGame.setOnClickListener(new View.OnClickListener() {
+        if (db.getPlayerGameCode() != "") gameCodeLine.setText(db.getPlayerGameCode());
+        joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                String codeText = gameCode.getText().toString();
+                gameCodeLine.setVisibility(View.VISIBLE);
+                joinGameText.setVisibility(View.INVISIBLE);
+                enterCodeButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        enterCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String codeText = gameCodeLine.getText().toString();
                 if (!codeText.isEmpty()) {
                     db.setPlayerGameCode(codeText);
                     db.playerEntrance(codeText);

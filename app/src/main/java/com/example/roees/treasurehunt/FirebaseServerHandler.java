@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class FirebaseServerHandler {
     private FirebaseAuth serverAuth;
-    private boolean isSucceeded = false;
+    private boolean isSucceeded;
     private FirebaseStorage storage;
     private Serializable retrievedData;
     private String logFeedback;
@@ -71,6 +71,8 @@ public class FirebaseServerHandler {
             }
             }
         });
+
+
         return isSucceeded;
     }
     public boolean tryUploadData(Serializable data) {
@@ -93,14 +95,16 @@ public class FirebaseServerHandler {
         return isSucceeded;
     }
     public boolean tryRetrieveData(String uid) {
-        final long ONE_MEGABYTE = 1024 * 1024;
+        final long BYTE_CAP = 2048;
         StorageReference storageReference = storage.getReference().child("uploads/" + uid);
-        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        storageReference.getBytes(BYTE_CAP).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
             retrievedData = SerializationUtils.deserialize(bytes);
             storageFeedback = "Data downloaded successfully";
             isSucceeded = true;
+                Log.e("th_log", "sfddsfs");
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

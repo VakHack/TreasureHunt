@@ -3,45 +3,53 @@ package com.example.roees.treasurehunt;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 public class LoadingHandler {
-    private final int INTERVAL_DURATION;
-    private final int NUM_OF_INTERVALS;
+    private final int intervalDuration;
+    private final int maxTrialDuration;
     private TreasureHuntDB db;
     private Context context;
-    private int currentWaitTime;
+    private int currentWaitDuration;
     private Intent nextScreen;
     private boolean loginRequired;
     boolean isSucceed;
+    private View indicator;
 
-    public LoadingHandler(int INTERVAL_DURATION, int NUM_OF_INTERVALS, TreasureHuntDB db,
-                          Context context, Intent nextScreen, boolean loginRequired) {
-        this.INTERVAL_DURATION = INTERVAL_DURATION;
-        this.NUM_OF_INTERVALS = NUM_OF_INTERVALS;
+    public LoadingHandler(int intervalDuration, int numOfIntervals, TreasureHuntDB db,
+                          Context context, Intent nextScreen, boolean loginRequired, View indicator) {
+        this.intervalDuration = intervalDuration;
+        maxTrialDuration = intervalDuration*numOfIntervals;
         this.db = db;
         this.context = context;
         this.nextScreen = nextScreen;
         this.loginRequired = loginRequired;
+        this.indicator = indicator;
     }
 
     private void login(){
-        currentWaitTime = 0;
-        while (!db.login(db.getSavedUsername(), db.getSavedPassword()) && currentWaitTime <= NUM_OF_INTERVALS) {
-            SystemClock.sleep(INTERVAL_DURATION);
-            currentWaitTime += INTERVAL_DURATION;
+
+        currentWaitDuration = 0;
+        while(currentWaitDuration <= maxTrialDuration) {
+            db.login(db.getSavedUsername(), db.getSavedPassword());
+            SystemClock.sleep(intervalDuration);
+            if(db.isDownloadSucceeded()) break;
+            currentWaitDuration += intervalDuration;
         }
-        isSucceed = currentWaitTime < NUM_OF_INTERVALS;
+        isSucceed = currentWaitDuration < maxTrialDuration;
     }
 
     private void download(){
-        currentWaitTime = 0;
-        while (!db.downloadGameData() && currentWaitTime <= NUM_OF_INTERVALS) {
-            SystemClock.sleep(INTERVAL_DURATION);
-            currentWaitTime += INTERVAL_DURATION;
+        currentWaitDuration = 0;
+        while(currentWaitDuration <= maxTrialDuration) {
+            db.downloadGameData();
+            SystemClock.sleep(intervalDuration);
+            if(db.isDownloadSucceeded()) break;
+            currentWaitDuration += intervalDuration;
         }
-        isSucceed = currentWaitTime < NUM_OF_INTERVALS;
+        isSucceed = currentWaitDuration < maxTrialDuration;
     }
 
     private boolean loadingHandler(){
@@ -53,7 +61,7 @@ public class LoadingHandler {
                 }
                 download();
             }
-        });
+        }).run();
 
         return isSucceed;
     }
@@ -63,12 +71,19 @@ public class LoadingHandler {
         Toast.makeText(context, failureMessage, Toast.LENGTH_SHORT).show();
     }
 
-    public void waitUntilLoaded(){
-        if(loadingHandler()) context.startActivity(nextScreen);
+    public boolean waitUntilLoaded(){
+        indicator.setVisibility(View.VISIBLE);
+        if(loadingHandler()){
+            context.startActivity(nextScreen);
+            return true;
+        }
+        else {
+            indicator.setVisibility(View.INVISIBLE);
+            return false;
+        }
     }
 
     public void waitUntilLoaded(String failureMessage){
-        if(!loadingHandler()) failureMessageHandler(failureMessage);
-        else context.startActivity(nextScreen);
+        if(!waitUntilLoaded()) failureMessageHandler(failureMessage);
     }
 }

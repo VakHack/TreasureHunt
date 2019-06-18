@@ -19,7 +19,7 @@ public class FirebaseDB implements TreasureHuntDB {
     private FirebaseServerHandler fb;
     private String email;
     private String password;
-    private LanguageImp languageImp = new HebrewImp();
+    private LanguageImp languageImp;
     private SharedPreferences appMap;
     private SharedPreferences.Editor appMapEditor;
     private String LOGGED_IN_CLOUD = "LOGGED_IN";
@@ -32,7 +32,6 @@ public class FirebaseDB implements TreasureHuntDB {
     private String PLAYER_CURRENT_MARKER = "PLAYER_CURRENT_MARKER";
     private Context appContext;
     private static final FirebaseDB ourInstance = new FirebaseDB();
-    private final int NUMBER_OF_DOWNLOAD_ATTEMPTS = 15;
     private Map<Integer, Pair<LatLng, String>> RNCMap = new HashMap<>();
 
     public static FirebaseDB getInstance() {
@@ -49,7 +48,8 @@ public class FirebaseDB implements TreasureHuntDB {
     private FirebaseDB() {
         fb = new FirebaseServerHandler();
         //initialize shared preferences
-        if(Locale.getDefault().getDisplayLanguage()==)
+        if(Locale.getDefault().getDisplayLanguage().equals("עברית")) languageImp = new HebrewImp();
+        else languageImp = new EnglishImp();
     }
 
     @Override
@@ -223,7 +223,14 @@ public class FirebaseDB implements TreasureHuntDB {
 
     @Override
     public void saveInstructorDetails(String instructorEmail, String instructorPassword) {
+        appMapEditor = appMap.edit();
         appMapEditor.putString(USER_PASSWORD, instructorEmail);
         appMapEditor.putString(USERNAME, instructorPassword);
+        appMapEditor.apply();
+    }
+
+    @Override
+    public boolean isDownloadSucceeded() {
+        return fb.didActionSucceeded();
     }
 }
