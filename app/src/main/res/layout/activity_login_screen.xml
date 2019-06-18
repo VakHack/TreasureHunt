@@ -20,69 +20,72 @@
             android:layout_marginTop="35pt"
             app:srcCompat="@drawable/pirate" />
 
-        <Button
-            android:id="@+id/joinGame"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/gameCodeLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pirate"
-            android:drawableTop="@drawable/treasure_map"
-            android:layout_marginTop="30pt"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="30pt"
-            android:background="@android:color/transparent"/>
-
-        <EditText
-            android:id="@+id/gameCode"
-            android:layout_below="@id/pirate"
-            android:layout_width="95pt"
-            android:layout_height="45dp"
-            android:layout_marginTop="34pt"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="70pt"
-            android:background="@drawable/join_game_textbox"
-            android:visibility="invisible"
-            android:textAlignment="center"
-            android:textColor="#404042"
-            android:layout_centerHorizontal="true"
-            android:textSize="5.5pt" />
-
-        <TextView
-            android:id="@+id/joinGameText"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/pirate"
-            android:layout_height="35pt"
-            android:layout_marginTop="36pt"
-            android:layout_marginStart="75pt"
-            android:textColor="#404042"
-            android:layout_alignParentStart="true"
-            android:textSize="20pt"
-            android:text="text text"
-            tools:ignore="HardcodedText" />
-
-        <Button
-            android:id="@+id/instructorEntrance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/joinGame"
+            android:orientation="vertical"
             android:layout_marginTop="10pt"
-            android:drawableTop="@drawable/shovel"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="30pt"
-            android:background="@android:color/transparent" />
+            android:layout_alignBottom="@id/pirate">
 
-        <TextView
-            android:id="@+id/instructorEntranceText"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/joinGameText"
-            android:layout_marginTop="15pt"
-            android:layout_height="35pt"
-            android:layout_marginStart="75pt"
-            android:textAlignment="center"
-            android:textColor="#404042"
-            android:layout_alignParentStart="true"
-            android:textSize="20pt"
-            android:text="text text"
-            tools:ignore="HardcodedText" />
+            <EditText
+                android:id="@+id/gameCode"
+                android:layout_width="95pt"
+                android:layout_height="45dp"
+                android:layout_marginStart="70pt"
+                android:background="@drawable/join_game_textbox"
+                android:textAlignment="center"
+                android:textColor="#404042"
+                android:textSize="5.5pt"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/joinGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30pt"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/treasure_map" />
+
+            <TextView
+                android:id="@+id/joinGameText"
+                android:layout_width="wrap_content"
+                android:layout_height="35pt"
+                android:layout_marginStart="75pt"
+                android:text="text text"
+                android:textColor="#404042"
+                android:textSize="20pt"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/instructorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10pt"
+            android:layout_alignTop="@id/gameCodeLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/instructorEntranceText"
+                android:layout_width="wrap_content"
+                android:layout_height="35pt"
+                android:layout_marginStart="75pt"
+                android:text="text text"
+                android:textAlignment="center"
+                android:textColor="#404042"
+                android:textSize="20pt"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/instructorEntrance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30pt"
+                android:layout_marginTop="10pt"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/shovel" />
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress_bar"
