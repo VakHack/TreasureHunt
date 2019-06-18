@@ -38,21 +38,24 @@ public class InstructorLogin extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.INVISIBLE);
+
         final Intent instructorMapScreen = new Intent(InstructorLogin.this, InstructorMap.class);
-        final LoadingHandler loadingHandler = new LoadingHandler(1000, 4,
-                db, myContext, instructorMapScreen, true, progressBar);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String currentEmail = email.getText().toString();
-                String currentPassword = password.getText().toString();
-                if(!currentEmail.isEmpty() && !currentPassword.isEmpty()){
-                    db.saveInstructorDetails(currentEmail, currentPassword);
-                    loadingHandler.waitUntilLoaded();
-                } else {
-                Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
-            }
+                progressBar.setVisibility(View.VISIBLE);
+                new Thread(new Runnable() {
+                    public void run() {
+                        while (!db.login(email.getText().toString(), password.getText().toString())) {
+                            SystemClock.sleep(1500);
+                        }
+                        while (!db.downloadGameData()) {
+                            SystemClock.sleep(1500);
+                        }
+                        startActivity(instructorMapScreen);
+                    }
+                }).start();
             }
         });
     }

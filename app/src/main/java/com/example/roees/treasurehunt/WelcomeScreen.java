@@ -3,6 +3,7 @@ package com.example.roees.treasurehunt;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,9 @@ public class WelcomeScreen extends AppCompatActivity {
     ProgressBar progressBar;
     final private String BUTTONS_FONT = "fonts/Nehama.ttf";
     final private int TEXT_SIZE = 40;
+    private final int INTERVAL = 2000;
+    private final int MAX_NUM_OF_INTERVALS = 5;
+    private final int MAX_WAIT_DURATION = INTERVAL * MAX_NUM_OF_INTERVALS;
 
     public void showToast(final String toast)
     {
@@ -46,10 +50,6 @@ public class WelcomeScreen extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.INVISIBLE);
-
-        final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
-        final LoadingHandler loadingHandler = new LoadingHandler(1500,
-                5, db, myContext, playerMap, false, progressBar);
 
         joinGameButton = findViewById(R.id.joinGame);
         joinGameText = findViewById(R.id.joinGameText);
@@ -86,15 +86,30 @@ public class WelcomeScreen extends AppCompatActivity {
             }
         });
 
+        if (db.getPlayerGameCode() != "") gameCodeLine.setText(db.getPlayerGameCode());
+        final Intent playerMap = new Intent(WelcomeScreen.this, PlayerMap.class);
         enterCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 String codeText = gameCodeLine.getText().toString();
                 if (!codeText.isEmpty()) {
                     db.setPlayerGameCode(codeText);
                     db.playerEntrance(codeText);
-                    loadingHandler.waitUntilLoaded(FirebaseDB.getInstance().getLanguageImp().wrongCode());
-                    progressBar.setVisibility(View.INVISIBLE);
+                    new Thread(new Runnable() {
+                        public void run() {
+                            int currentWaitTime = 0;
+                            while (!db.downloadGameData() && currentWaitTime <= MAX_WAIT_DURATION) {
+                                SystemClock.sleep(INTERVAL);
+                                currentWaitTime += INTERVAL;
+                            }
+                            if (currentWaitTime < MAX_WAIT_DURATION) startActivity(playerMap);
+                            else {
+                                showToast(FirebaseDB.getInstance().getLanguageImp().wrongCode());
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    }).start();
                 } else {
                     Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().enterGameCode(), Toast.LENGTH_SHORT).show();
                 }
