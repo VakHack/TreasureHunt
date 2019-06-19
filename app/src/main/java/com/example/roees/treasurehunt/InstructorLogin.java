@@ -28,11 +28,11 @@ public class InstructorLogin extends AppCompatActivity {
 
         password = findViewById(R.id.password);
         password.setHint(db.getLanguageImp().enterPassword());
-        if (db.getSavedUsername() != "") password.setText(db.getSavedPassword());
+        if (!db.getSavedUsername().isEmpty()) password.setText(db.getSavedPassword());
 
         email = findViewById(R.id.email);
         email.setHint(db.getLanguageImp().enterEmail());
-        if (db.getSavedUsername() != "") email.setText(db.getSavedUsername());
+        if (!db.getSavedUsername().isEmpty()) email.setText(db.getSavedUsername());
 
         submit = findViewById(R.id.submit);
 

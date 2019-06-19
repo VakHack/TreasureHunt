@@ -43,11 +43,12 @@
                 android:layout_height="match_parent"
                 android:text="text text"
                 android:textColor="#404042"
-                android:textSize="20pt"
+                android:textSize="13pt"
                 android:paddingStart="5pt"
                 android:gravity="center"
-                android:textAlignment="center"
-                tools:ignore="HardcodedText" />
+                android:fontFamily="sans-serif-black"
+                android:textAlignment="textStart"
+                tools:ignore="HardcodedText,RtlCompat" />
 
             <Button
                 android:id="@+id/enterCode"
@@ -95,12 +96,13 @@
                 android:layout_height="match_parent"
                 android:text="text text"
                 android:textColor="#404042"
-                android:textSize="20pt"
-                android:textAlignment="center"
+                android:textSize="13pt"
+                android:textAlignment="textStart"
                 android:layout_width="90pt"
                 android:paddingStart="5pt"
                 android:gravity="center"
-                tools:ignore="HardcodedText" />
+                android:fontFamily="sans-serif-black"
+                tools:ignore="HardcodedText,RtlCompat" />
         </LinearLayout>
 
         <ProgressBar
