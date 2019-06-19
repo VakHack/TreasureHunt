@@ -169,7 +169,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 db.logout();
-                final Intent welcomeScreen = new Intent(InstructorMap.this, WelcomeScreen.class);
+                final Intent welcomeScreen = new Intent(InstructorMap.this, MainMenu.class);
                 startActivity(welcomeScreen);
             }
         });

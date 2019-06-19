@@ -224,8 +224,8 @@ public class FirebaseDB implements TreasureHuntDB {
     @Override
     public void saveInstructorDetails(String instructorEmail, String instructorPassword) {
         appMapEditor = appMap.edit();
-        appMapEditor.putString(USER_PASSWORD, instructorEmail);
-        appMapEditor.putString(USERNAME, instructorPassword);
+        appMapEditor.putString(USER_PASSWORD, instructorPassword);
+        appMapEditor.putString(USERNAME, instructorEmail);
         appMapEditor.apply();
     }
 

@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -28,7 +30,7 @@ public class InstructorLogin extends AppCompatActivity {
 
         password = findViewById(R.id.password);
         password.setHint(db.getLanguageImp().enterPassword());
-        if (!db.getSavedUsername().isEmpty()) password.setText(db.getSavedPassword());
+        if (!db.getSavedPassword().isEmpty()) password.setText(db.getSavedPassword());
 
         email = findViewById(R.id.email);
         email.setHint(db.getLanguageImp().enterEmail());
@@ -45,11 +47,16 @@ public class InstructorLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
+                final String currentEmail = email.getText().toString();
+                final String currentPassword = password.getText().toString();
+                password.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                email.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 new Thread(new Runnable() {
                     public void run() {
-                        while (!db.login(email.getText().toString(), password.getText().toString())) {
+                        while (!db.login(currentEmail, currentPassword)) {
                             SystemClock.sleep(1500);
                         }
+                        db.saveInstructorDetails(currentEmail, currentPassword);
                         while (!db.downloadGameData()) {
                             SystemClock.sleep(1500);
                         }

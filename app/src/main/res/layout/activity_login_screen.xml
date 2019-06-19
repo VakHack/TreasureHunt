@@ -27,7 +27,7 @@
             android:layout_below="@id/pirate"
             android:layout_marginTop="30pt"
             android:layout_centerHorizontal="true"
-            android:paddingStart="30pt"
+            android:paddingStart="25pt"
             android:orientation="horizontal">
 
             <Button
@@ -44,7 +44,7 @@
                 android:text="text text"
                 android:textColor="#404042"
                 android:textSize="13pt"
-                android:paddingStart="5pt"
+                android:paddingStart="10pt"
                 android:gravity="center"
                 android:fontFamily="sans-serif-black"
                 android:textAlignment="textStart"
@@ -70,7 +70,7 @@
             android:textAlignment="center"
             android:textColor="#404042"
             android:textSize="5.5pt"
-            android:layout_marginStart="65pt"
+            android:layout_marginStart="60pt"
             android:layout_marginTop="30pt"
             android:visibility="invisible" />
 
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/gameCodeLayout"
             android:layout_marginTop="10pt"
-            android:paddingStart="30pt"
+            android:paddingStart="25pt"
             android:orientation="horizontal">
 
             <Button
@@ -98,8 +98,8 @@
                 android:textColor="#404042"
                 android:textSize="13pt"
                 android:textAlignment="textStart"
-                android:layout_width="90pt"
-                android:paddingStart="5pt"
+                android:layout_width="100pt"
+                android:paddingStart="10pt"
                 android:gravity="center"
                 android:fontFamily="sans-serif-black"
                 tools:ignore="HardcodedText,RtlCompat" />

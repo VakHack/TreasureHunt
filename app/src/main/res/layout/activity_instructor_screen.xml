@@ -15,7 +15,6 @@
 
         <EditText
             android:id="@+id/email"
-            android:imeActionLabel="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:textAlignment="center"
@@ -24,7 +23,6 @@
 
         <EditText
             android:id="@+id/password"
-            android:imeActionLabel="@+id/submit"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="50dp"

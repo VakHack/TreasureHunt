@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -120,7 +119,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 db.logout();
-                final Intent welcomeScreen = new Intent(PlayerMap.this, WelcomeScreen.class);
+                final Intent welcomeScreen = new Intent(PlayerMap.this, MainMenu.class);
                 startActivity(welcomeScreen);
             }
         });
