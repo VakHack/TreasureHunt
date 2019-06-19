@@ -17,15 +17,16 @@ public class MainMenu extends AppCompatActivity {
 
     Button joinGameButton;
     TextView joinGameText;
-    Button instructor;
+    Button instructorButton;
     TextView instructorText;
     Button enterCodeButton;
     EditText gameCodeLine;
+    boolean joinGameLineDisplayed = false;
     final Context myContext = this;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
-    final private String BUTTONS_FONT = db.getLanguageImp() instanceof HebrewImp ? "fonts/Nehama.ttf" : "fonts/PatrickHand.ttf";
-    final private int TEXT_SIZE = db.getLanguageImp() instanceof HebrewImp ? 40 : 25;
+    final private String BUTTONS_FONT = db.getLanguageImp() instanceof HebrewImp ? "fonts/GveretLevin.ttf" : "fonts/PatrickHand.ttf";
+    final private int TEXT_SIZE = db.getLanguageImp() instanceof HebrewImp ? 30 : 25;
     private final int INTERVAL = 2000;
     private final int MAX_NUM_OF_INTERVALS = 5;
     private final int MAX_WAIT_DURATION = INTERVAL * MAX_NUM_OF_INTERVALS;
@@ -57,7 +58,7 @@ public class MainMenu extends AppCompatActivity {
         joinGameText.setTextSize(TEXT_SIZE);
         joinGameText.setTypeface(Typeface.createFromAsset(getAssets(), BUTTONS_FONT));
 
-        instructor = findViewById(R.id.instructorEntrance);
+        instructorButton = findViewById(R.id.instructorEntrance);
         instructorText = findViewById(R.id.instructorEntranceText);
         instructorText.setText(db.getLanguageImp().instructorEntrance());
         instructorText.setTextSize(TEXT_SIZE);
@@ -69,7 +70,7 @@ public class MainMenu extends AppCompatActivity {
         enterCodeButton.setVisibility(View.INVISIBLE);
 
         final Intent instructorScreen = new Intent(MainMenu.this, InstructorLogin.class);
-        instructor.setOnClickListener(new View.OnClickListener() {
+        instructorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(instructorScreen);
@@ -80,8 +81,19 @@ public class MainMenu extends AppCompatActivity {
         joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(joinGameLineDisplayed){
+                    joinGameLineDisplayed = false;
+                    instructorButton.setVisibility(View.VISIBLE);
+                    instructorText.setVisibility(View.VISIBLE);
+                    gameCodeLine.setVisibility(View.INVISIBLE);
+                    enterCodeButton.setVisibility(View.INVISIBLE);
+                    return;
+                }
+
+                joinGameLineDisplayed = true;
+                instructorButton.setVisibility(View.INVISIBLE);
+                instructorText.setVisibility(View.INVISIBLE);
                 gameCodeLine.setVisibility(View.VISIBLE);
-                joinGameText.setVisibility(View.INVISIBLE);
                 enterCodeButton.setVisibility(View.VISIBLE);
             }
         });

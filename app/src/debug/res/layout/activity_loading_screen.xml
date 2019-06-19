@@ -13,7 +13,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         android:text="Treasure Hunt"
         android:textAlignment="center"
         android:textColor="@color/quantum_bluegrey900"
@@ -35,7 +35,7 @@
 
     <ImageView
         android:layout_below="@id/sub"
-        android:layout_marginTop="20pt"
+        android:layout_marginTop="30pt"
         android:layout_width="wrap_content"
         android:layout_height="180dp"
         android:src="@drawable/treasure_theme"/>

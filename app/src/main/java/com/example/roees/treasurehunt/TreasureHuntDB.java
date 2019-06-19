@@ -4,7 +4,7 @@ import android.content.Context;
 import com.google.android.gms.maps.model.LatLng;
 
 public interface TreasureHuntDB {
-    //instructor functions
+    //instructorButton functions
     void saveInstructorDetails(String instructorEmail, String instructorPassword);
     boolean login(String instructorEmail, String instructorPassword);
     boolean downloadGameData();

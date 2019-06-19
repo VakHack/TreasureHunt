@@ -18,7 +18,7 @@ public class SplashScreen extends AppCompatActivity {
 
         TextView title = findViewById(R.id.title);
         title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Caligraf.ttf"));
-        title.setTextSize(100);
+        title.setTextSize(110);
 
         TextView sub = findViewById(R.id.sub);
         sub.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Caligraf.ttf"));
