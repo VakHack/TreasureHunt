@@ -13,9 +13,11 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,6 +31,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+
 public class InstructorMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap map;
@@ -38,6 +42,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private Button play;
     private Marker activatedMarker = null;
     private EditText riddleLine;
+    private ImageView mockupLayout;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
     final Context myContext = this;
@@ -114,6 +119,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         enterRiddle = findViewById(R.id.enterRiddle);
         logout = findViewById(R.id.logout);
         play = findViewById(R.id.play);
+        mockupLayout = findViewById(R.id.mockupLayout);
         db.downloadGameData();
     }
 
@@ -125,6 +131,23 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         initGoogleMapUtils(googleMap);
         zoomToCurrentLocation();
         addSavedMarkers();
+
+        new MaterialTapTargetPrompt.Builder(InstructorMap.this)
+                .setTarget(R.id.mockupLayout)
+                .setPrimaryText("Send your first email")
+                .setSecondaryText("Tap the envelope to start composing your first email")
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                {
+                    @Override
+                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                    {
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
+                        {
+                            // User has pressed the prompt target
+                        }
+                    }
+                })
+                .show();
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
