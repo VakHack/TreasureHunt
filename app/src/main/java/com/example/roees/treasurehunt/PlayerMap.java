@@ -11,8 +11,10 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -26,18 +28,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.Vector;
+
 public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
     private Button logout;
     private Button riddle;
     private Button verifyLocation;
+    private ImageView locationBackground;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     final Context myContext = this;
     final int MAX_DISTANCE_TO_DESTINATION = 50;
     final float ZOOM_FACTOR = 20;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
+    private ShowcaseHandler showcaseHandler;
 
     void zoomToCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -94,6 +100,18 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
             map.addMarker(new MarkerOptions().position(coordinate).icon(BitmapDescriptorFactory.fromResource(R.drawable.treasure_icon)));
     }
 
+    void initShowCase() {
+        Vector<Pair<View, Pair<String, String>>> instructions = new Vector<>();
+        instructions.add(new Pair<View, Pair<String, String>>(riddle, new Pair<>(db.getLanguageImp().playerRiddlePrimary(), db.getLanguageImp().playerRiddleSecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(verifyLocation, new Pair<>(db.getLanguageImp().playerLocationVerifyPrimary(), db.getLanguageImp().playerLocationVerifySecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(locationBackground, new Pair<>(db.getLanguageImp().playerLocatePrimary(), db.getLanguageImp().playerLocateSecondary())));
+        showcaseHandler = new ShowcaseHandler(this, instructions);
+    }
+
+    void runRelevantShowcaseIfActive(){
+        if(db.isShowCaseActive()) showcaseHandler.callRelevantShowcase();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +124,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         riddle = findViewById(R.id.riddle);
         verifyLocation = findViewById(R.id.verifyLocation);
         verifyLocation.setText(db.getLanguageImp().IAmHere());
+        locationBackground = findViewById(R.id.playerLocationBackground);
     }
 
     @Override
@@ -114,6 +133,16 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         initGoogleMapUtils(googleMap);
         zoomToCurrentLocation();
         addMarkersUntilCurrentMarker();
+        initShowCase();
+        runRelevantShowcaseIfActive();
+
+        locationBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runRelevantShowcaseIfActive();
+                locationBackground.setVisibility(View.INVISIBLE);
+            }
+        });
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +156,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         riddle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                runRelevantShowcaseIfActive();
                 String title = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + (db.getPlayerCurrentMarker() + 1)
                         : db.getLanguageImp().congratulations();
                 String message = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker()))
@@ -147,6 +177,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         verifyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                runRelevantShowcaseIfActive();
                 zoomToCurrentLocation();
                 LatLng coordinate = db.coordinateInCloseProximity(myLoc, MAX_DISTANCE_TO_DESTINATION);
                 if (coordinate != null) {

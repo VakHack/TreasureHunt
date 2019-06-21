@@ -14,7 +14,7 @@
         tools:context=".InstructorMap" />
 
     <ImageView
-        android:id="@+id/locationBackground"
+        android:id="@+id/instructorLocationBackground"
         android:layout_alignParentEnd="true"
         android:layout_width="18pt"
         android:layout_height="18pt"

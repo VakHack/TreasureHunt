@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,7 +31,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 public class InstructorMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -139,7 +137,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         logout = findViewById(R.id.logout);
         play = findViewById(R.id.play);
         mockupLayout = findViewById(R.id.mockupLayout);
-        locationBackground = findViewById(R.id.locationBackground);
+        locationBackground = findViewById(R.id.instructorLocationBackground);
         db.downloadGameData();
     }
 

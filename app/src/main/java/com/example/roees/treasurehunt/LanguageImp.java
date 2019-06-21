@@ -43,4 +43,11 @@ public abstract interface LanguageImp {
     public String instructorLocateSecondary();
     public String instructorStartGamePrimary();
     public String instructorStartGameSecondary();
+
+    public String playerRiddlePrimary();
+    public String playerRiddleSecondary();
+    public String playerLocationVerifyPrimary();
+    public String playerLocationVerifySecondary();
+    public String playerLocatePrimary();
+    public String playerLocateSecondary();
 }

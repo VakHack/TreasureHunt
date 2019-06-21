@@ -190,4 +190,34 @@ public class HebrewImp implements LanguageImp {
     public String instructorStartGameSecondary() {
         return "כפתור ה-play יפיק לך קוד יחודי למשחק שלך. העתק והעבר אותו לשחקנים";
     }
+
+    @Override
+    public String playerRiddlePrimary() {
+        return "ברוכים הבאים מחפשי מטמון!";
+    }
+
+    @Override
+    public String playerRiddleSecondary() {
+        return "כאן תוכלו לראות את החידה לנקודה הבאה במסלול";
+    }
+
+    @Override
+    public String playerLocationVerifyPrimary() {
+        return "חושבים שהגעתם ליעד?";
+    }
+
+    @Override
+    public String playerLocationVerifySecondary() {
+        return "לחצו כאן בכדי לבדוק!";
+    }
+
+    @Override
+    public String playerLocatePrimary() {
+        return "אבודים?";
+    }
+
+    @Override
+    public String playerLocateSecondary() {
+        return "מצאו את מיקומכם הנוכחי";
+    }
 }

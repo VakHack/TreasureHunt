@@ -190,4 +190,34 @@ public class EnglishImp implements LanguageImp {
     public String instructorStartGameSecondary() {
         return null;
     }
+
+    @Override
+    public String playerRiddlePrimary() {
+        return null;
+    }
+
+    @Override
+    public String playerRiddleSecondary() {
+        return null;
+    }
+
+    @Override
+    public String playerLocationVerifyPrimary() {
+        return null;
+    }
+
+    @Override
+    public String playerLocationVerifySecondary() {
+        return null;
+    }
+
+    @Override
+    public String playerLocatePrimary() {
+        return null;
+    }
+
+    @Override
+    public String playerLocateSecondary() {
+        return null;
+    }
 }
