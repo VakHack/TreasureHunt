@@ -32,4 +32,8 @@ public interface TreasureHuntDB {
     void initContext(Context context);
     String getSavedUsername();
     String getSavedPassword();
+
+    //showcase functions
+    void toggleShowcase();
+    boolean isShowCaseActive();
 }

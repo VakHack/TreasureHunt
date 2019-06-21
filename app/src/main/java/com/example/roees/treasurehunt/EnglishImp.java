@@ -120,4 +120,74 @@ public class EnglishImp implements LanguageImp {
     public String finishedSuccessfully() {
         return "The treasure is yours";
     }
+
+    @Override
+    public String instructorClickMapPrimary() {
+        return null;
+    }
+
+    @Override
+    public String instructorClickMapSecondary() {
+        return null;
+    }
+
+    @Override
+    public String instructorEnterRiddlePrimary() {
+        return null;
+    }
+
+    @Override
+    public String instructorEnterRiddleSecondary() {
+        return null;
+    }
+
+    @Override
+    public String instructorSendRiddlePrimary() {
+        return null;
+    }
+
+    @Override
+    public String instructorSendRiddleSecondary() {
+        return null;
+    }
+
+    @Override
+    public String instructorClickMarkerPrimary() {
+        return null;
+    }
+
+    @Override
+    public String instructorClickMarkerSecondary() {
+        return null;
+    }
+
+    @Override
+    public String instructorDeleteMarkerPrimary() {
+        return null;
+    }
+
+    @Override
+    public String instructorDeleteMarkerSecondary() {
+        return null;
+    }
+
+    @Override
+    public String instructorLocatePrimary() {
+        return null;
+    }
+
+    @Override
+    public String instructorLocateSecondary() {
+        return null;
+    }
+
+    @Override
+    public String instructorStartGamePrimary() {
+        return null;
+    }
+
+    @Override
+    public String instructorStartGameSecondary() {
+        return null;
+    }
 }

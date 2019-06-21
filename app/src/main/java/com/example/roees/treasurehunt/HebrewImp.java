@@ -120,4 +120,74 @@ public class HebrewImp implements LanguageImp {
     public String finishedSuccessfully() {
         return "האוצר שלך";
     }
+
+    @Override
+    public String instructorClickMapPrimary() {
+        return "הוסף נקודת ציון";
+    }
+
+    @Override
+    public String instructorClickMapSecondary() {
+        return "לחיצה על המפה תוסיף נקודה חדשה למשחק";
+    }
+
+    @Override
+    public String instructorEnterRiddlePrimary() {
+        return "";
+    }
+
+    @Override
+    public String instructorEnterRiddleSecondary() {
+        return "כאן תוכל להזין את הרמז, שמוביל את השחקנים לנקודה זו";
+    }
+
+    @Override
+    public String instructorSendRiddlePrimary() {
+        return "";
+    }
+
+    @Override
+    public String instructorSendRiddleSecondary() {
+        return "לחץ כאן לשמירת החידה";
+    }
+
+    @Override
+    public String instructorClickMarkerPrimary() {
+        return "תוכלו תמיד לראות את החידה ולערוך אותה";
+    }
+
+    @Override
+    public String instructorClickMarkerSecondary() {
+        return "נעשה זאת על ידי לחיצה על המקום בו הוכנסה";
+    }
+
+    @Override
+    public String instructorDeleteMarkerPrimary() {
+        return "התחרטת? לא נורא";
+    }
+
+    @Override
+    public String instructorDeleteMarkerSecondary() {
+        return "לאחר לחיצה על מקום החידה השמורה ניתן למחוק אותה בלחיצה על הפח";
+    }
+
+    @Override
+    public String instructorLocatePrimary() {
+        return "אבוד?";
+    }
+
+    @Override
+    public String instructorLocateSecondary() {
+        return "מצא את מיקומך הנוכחי";
+    }
+
+    @Override
+    public String instructorStartGamePrimary() {
+        return "הכל מוכן?";
+    }
+
+    @Override
+    public String instructorStartGameSecondary() {
+        return "כפתור ה-play יפיק לך קוד יחודי למשחק שלך. העתק והעבר אותו לשחקנים";
+    }
 }

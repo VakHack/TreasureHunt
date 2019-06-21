@@ -13,8 +13,9 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.text.Layout;
+import android.util.Pair;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,7 +32,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import java.util.HashMap;
+import java.util.Vector;
 
 public class InstructorMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -43,12 +45,14 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private Marker activatedMarker = null;
     private EditText riddleLine;
     private ImageView mockupLayout;
+    private ImageView locationBackground;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     final String DEFAULT_RIDDLE_HINT = FirebaseDB.getInstance().getLanguageImp().addNewRiddle();
     final Context myContext = this;
     final float ZOOM_FACTOR = 14;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
+    private ShowcaseHandler showcaseHandler;
 
     void zoomToCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -83,6 +87,21 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         activatedMarker.setTitle(title);
         activatedMarker.setSnippet(riddle);
         activatedMarker.showInfoWindow();
+    }
+
+    void initShowCase() {
+        Vector<Pair<View, Pair<String, String>>> instructions = new Vector<>();
+        instructions.add(new Pair<View, Pair<String, String>>(mockupLayout, new Pair<>(db.getLanguageImp().instructorClickMapPrimary(), db.getLanguageImp().instructorClickMapSecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(riddleLine, new Pair<>(db.getLanguageImp().instructorEnterRiddlePrimary(), db.getLanguageImp().instructorEnterRiddleSecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(mockupLayout, new Pair<>(db.getLanguageImp().instructorClickMarkerPrimary(), db.getLanguageImp().instructorClickMarkerSecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(deleteMarker, new Pair<>(db.getLanguageImp().instructorDeleteMarkerPrimary(), db.getLanguageImp().instructorDeleteMarkerSecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(locationBackground, new Pair<>(db.getLanguageImp().instructorLocatePrimary(), db.getLanguageImp().instructorLocateSecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(play, new Pair<>(db.getLanguageImp().instructorStartGamePrimary(), db.getLanguageImp().instructorStartGameSecondary())));
+        showcaseHandler = new ShowcaseHandler(this, instructions);
+    }
+
+    void runRelevantShowcaseIfActive(){
+        if(db.isShowCaseActive()) showcaseHandler.callRelevantShowcase();
     }
 
     void initGoogleMapUtils(GoogleMap googleMap) {
@@ -120,6 +139,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         logout = findViewById(R.id.logout);
         play = findViewById(R.id.play);
         mockupLayout = findViewById(R.id.mockupLayout);
+        locationBackground = findViewById(R.id.locationBackground);
         db.downloadGameData();
     }
 
@@ -131,27 +151,13 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         initGoogleMapUtils(googleMap);
         zoomToCurrentLocation();
         addSavedMarkers();
-
-        new MaterialTapTargetPrompt.Builder(InstructorMap.this)
-                .setTarget(R.id.mockupLayout)
-                .setPrimaryText("Send your first email")
-                .setSecondaryText("Tap the envelope to start composing your first email")
-                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
-                {
-                    @Override
-                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
-                    {
-                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
-                        {
-                            // User has pressed the prompt target
-                        }
-                    }
-                })
-                .show();
+        initShowCase();
+        runRelevantShowcaseIfActive();
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
+                runRelevantShowcaseIfActive();
                 if(latLng==null) return;
                 String riddle = db.getRiddleByCoordinate(latLng);
                 if (riddle == null) riddleLine.setHint(DEFAULT_RIDDLE_HINT);
@@ -164,6 +170,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         deleteMarker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                runRelevantShowcaseIfActive();
                 if (activatedMarker != null) {
                     Integer riddleNum = db.getNumByCoordinate(activatedMarker.getPosition());
                     if(riddleNum!=null)db.removeRiddleByNum(riddleNum);
@@ -177,6 +184,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         enterRiddle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                runRelevantShowcaseIfActive();
                 if (activatedMarker != null && !riddleLine.getText().toString().isEmpty()) {
                     int numOfRiddles = db.getNumOfRiddles() + 1;
                     db.pushRiddle(activatedMarker.getPosition(), riddleLine.getText().toString());
@@ -185,6 +193,14 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                     activatedMarker = null;
                     riddleLine.setText("");
                 }
+            }
+        });
+
+        locationBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runRelevantShowcaseIfActive();
+                locationBackground.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -220,12 +236,14 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                             }
                         });
                 alertDialog.show();
+                db.toggleShowcase();
             }
         });
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        runRelevantShowcaseIfActive();
         if(marker==null) return false;
         activatedMarker = marker;
         buttonsVisibility(View.VISIBLE);

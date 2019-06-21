@@ -27,4 +27,20 @@ public abstract interface LanguageImp {
     public String wrongCode();
     public String congratulations();
     public String finishedSuccessfully();
+
+    //showcase content
+    public String instructorClickMapPrimary();
+    public String instructorClickMapSecondary();
+    public String instructorEnterRiddlePrimary();
+    public String instructorEnterRiddleSecondary();
+    public String instructorSendRiddlePrimary();
+    public String instructorSendRiddleSecondary();
+    public String instructorClickMarkerPrimary();
+    public String instructorClickMarkerSecondary();
+    public String instructorDeleteMarkerPrimary();
+    public String instructorDeleteMarkerSecondary();
+    public String instructorLocatePrimary();
+    public String instructorLocateSecondary();
+    public String instructorStartGamePrimary();
+    public String instructorStartGameSecondary();
 }

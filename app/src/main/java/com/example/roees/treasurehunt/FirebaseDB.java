@@ -22,14 +22,15 @@ public class FirebaseDB implements TreasureHuntDB {
     private LanguageImp languageImp;
     private SharedPreferences appMap;
     private SharedPreferences.Editor appMapEditor;
-    private String LOGGED_IN_CLOUD = "LOGGED_IN";
-    private String USER_PASSWORD = "USER_PASSWORD";
-    private String USERNAME = "USERNAME";
-    private String IS_INSTRUCTOR = "IS_INSTRUCTOR";
-    private String SHARED_PREFS = "SHARED_PREFS";
-    private String UID = "UID";
-    private String PLAYER_GAME_CODE = "PLAYER_GAME_CODE";
-    private String PLAYER_CURRENT_MARKER = "PLAYER_CURRENT_MARKER";
+    private final String LOGGED_IN_CLOUD = "LOGGED_IN";
+    private final String USER_PASSWORD = "USER_PASSWORD";
+    private final String USERNAME = "USERNAME";
+    private final String IS_INSTRUCTOR = "IS_INSTRUCTOR";
+    private final String IS_SHOWCASE_ACTIVE = "IS_SHOWCASE_ACTIVE";
+    private final String SHARED_PREFS = "SHARED_PREFS";
+    private final String UID = "UID";
+    private final String PLAYER_GAME_CODE = "PLAYER_GAME_CODE";
+    private final String PLAYER_CURRENT_MARKER = "PLAYER_CURRENT_MARKER";
     private Context appContext;
     private static final FirebaseDB ourInstance = new FirebaseDB();
     private Map<Integer, Pair<LatLng, String>> RNCMap = new HashMap<>();
@@ -232,5 +233,17 @@ public class FirebaseDB implements TreasureHuntDB {
     @Override
     public boolean isDownloadSucceeded() {
         return fb.didActionSucceeded();
+    }
+
+    @Override
+    public void toggleShowcase() {
+        appMapEditor = appMap.edit();
+        appMapEditor.putBoolean(IS_SHOWCASE_ACTIVE, !isShowCaseActive());
+        appMapEditor.apply();
+    }
+
+    @Override
+    public boolean isShowCaseActive() {
+        return appMap.getBoolean(IS_SHOWCASE_ACTIVE, true);
     }
 }
