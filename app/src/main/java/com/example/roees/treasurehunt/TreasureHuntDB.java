@@ -16,8 +16,8 @@ public interface TreasureHuntDB {
     Integer getNumOfRiddles();
     String getInstructorGameCode();
     void logout();
-    boolean isLoggedIn();
-    boolean isDownloadSucceeded();
+    String getLoginFeedback();
+    boolean isNewInstructor();
 
     //player functions
     void playerEntrance(String code);
@@ -32,6 +32,7 @@ public interface TreasureHuntDB {
     void initContext(Context context);
     String getSavedUsername();
     String getSavedPassword();
+    String getDownloadFeedback();
 
     //showcase functions
     void toggleShowcase(boolean isShowcaseActive);

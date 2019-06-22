@@ -37,6 +37,9 @@ public class FirebaseServerHandler {
     public String getLogFeedback() {
         return logFeedback;
     }
+    public boolean isUserContentEmpty(){
+        return storageFeedback.contains("Object does not exist");
+    }
     public String getStorageFeedback() {
         return storageFeedback;
     }

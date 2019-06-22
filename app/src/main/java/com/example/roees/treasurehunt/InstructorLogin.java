@@ -21,6 +21,20 @@ public class InstructorLogin extends AppCompatActivity {
     EditText email;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
+    private final int INTERVAL = 2000;
+    private final int MAX_NUM_OF_INTERVALS = 4;
+    private final int MAX_WAIT_DURATION = INTERVAL * MAX_NUM_OF_INTERVALS;
+    final Context myContext = this;
+
+    public void showToast(final String toast)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(myContext, toast, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +66,29 @@ public class InstructorLogin extends AppCompatActivity {
                 email.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 new Thread(new Runnable() {
                     public void run() {
-                        while (!db.login(currentEmail, currentPassword)) {
-                            SystemClock.sleep(1500);
+                        int currentWaitTime = 0;
+                        while (!db.login(currentEmail, currentPassword) && currentWaitTime <= MAX_WAIT_DURATION) {
+                            SystemClock.sleep(INTERVAL);
+                            currentWaitTime += INTERVAL;
                         }
+                        if (currentWaitTime >= MAX_WAIT_DURATION)
+                        {
+                            showToast(db.getLoginFeedback());
+                            progressBar.setVisibility(View.INVISIBLE);
+                            return;
+                        }
+                        currentWaitTime = 0;
                         db.saveInstructorDetails(currentEmail, currentPassword);
-                        while (!db.downloadGameData()) {
-                            SystemClock.sleep(1500);
+                        while (!db.downloadGameData() && currentWaitTime <= MAX_WAIT_DURATION) {
+                            SystemClock.sleep(INTERVAL);
+                            currentWaitTime += INTERVAL;
+                            if(db.isNewInstructor()) break;
+                        }
+                        if (currentWaitTime >= MAX_WAIT_DURATION)
+                        {
+                            showToast(db.getDownloadFeedback());
+                            progressBar.setVisibility(View.INVISIBLE);
+                            return;
                         }
                         startActivity(instructorMapScreen);
                     }

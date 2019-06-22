@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -125,6 +126,12 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
+    void deletePreviousMarkerIfNotSaved(){
+        if(activatedMarker!= null && db.getNumByCoordinate(activatedMarker.getPosition())==null) {
+            activatedMarker.remove();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,16 +156,17 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         googleMap.setOnMarkerClickListener(this);
         buttonsVisibility(View.INVISIBLE);
         initGoogleMapUtils(googleMap);
-        zoomToCurrentLocation();
         addSavedMarkers();
         initShowCase();
         runRelevantShowcaseIfActive();
+        zoomToCurrentLocation();
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 runRelevantShowcaseIfActive();
                 if(latLng==null) return;
+                deletePreviousMarkerIfNotSaved();
                 String riddle = db.getRiddleByCoordinate(latLng);
                 if (riddle == null) riddleLine.setHint(DEFAULT_RIDDLE_HINT);
                 else riddleLine.setHint(riddle);
@@ -254,6 +262,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         runRelevantShowcaseIfActive();
+        deletePreviousMarkerIfNotSaved();
         if(marker==null) return false;
         activatedMarker = marker;
         buttonsVisibility(View.VISIBLE);

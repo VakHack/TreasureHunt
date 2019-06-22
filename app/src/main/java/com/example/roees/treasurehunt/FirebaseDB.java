@@ -59,11 +59,6 @@ public class FirebaseDB implements TreasureHuntDB {
         appMap = appContext.getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
     }
 
-    @Override
-    public boolean isLoggedIn() {
-        return appMap.getBoolean(LOGGED_IN_CLOUD, false);
-    }
-
     private void addInstructorDetailsToSharedprefs() {
         appMapEditor = appMap.edit();
         appMapEditor.putBoolean(IS_INSTRUCTOR, true);
@@ -231,11 +226,6 @@ public class FirebaseDB implements TreasureHuntDB {
     }
 
     @Override
-    public boolean isDownloadSucceeded() {
-        return fb.didActionSucceeded();
-    }
-
-    @Override
     public void toggleShowcase(boolean isShowcaseActive) {
         appMapEditor = appMap.edit();
         appMapEditor.putBoolean(IS_SHOWCASE_ACTIVE, isShowcaseActive);
@@ -245,5 +235,20 @@ public class FirebaseDB implements TreasureHuntDB {
     @Override
     public boolean isShowCaseActive() {
         return appMap.getBoolean(IS_SHOWCASE_ACTIVE, true);
+    }
+
+    @Override
+    public String getLoginFeedback() {
+        return fb.getLogFeedback();
+    }
+
+    @Override
+    public String getDownloadFeedback() {
+        return fb.getStorageFeedback();
+    }
+
+    @Override
+    public boolean isNewInstructor() {
+        return fb.isUserContentEmpty();
     }
 }
