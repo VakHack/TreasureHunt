@@ -15,6 +15,7 @@ public abstract interface LanguageImp {
     public String successfullyRegistered();
     public String addNewRiddle();
     public String gameLoadedSuccessfully();
+    public String gameSavedSuccessfully();
     public String newGameCodeTitle();
     public String riddleTitle();
     public String copyGameCodeButton();
@@ -27,6 +28,7 @@ public abstract interface LanguageImp {
     public String wrongCode();
     public String congratulations();
     public String finishedSuccessfully();
+    public String tryAgain();
 
     //showcase content
     public String instructorClickMapPrimary();
@@ -43,7 +45,6 @@ public abstract interface LanguageImp {
     public String instructorLocateSecondary();
     public String instructorStartGamePrimary();
     public String instructorStartGameSecondary();
-
     public String playerRiddlePrimary();
     public String playerRiddleSecondary();
     public String playerLocationVerifyPrimary();

@@ -220,4 +220,14 @@ public class EnglishImp implements LanguageImp {
     public String playerLocateSecondary() {
         return "Find your current location here";
     }
+
+    @Override
+    public String gameSavedSuccessfully() {
+        return "Game saved successfully!";
+    }
+
+    @Override
+    public String tryAgain() {
+        return "Something happened. Please try again";
+    }
 }

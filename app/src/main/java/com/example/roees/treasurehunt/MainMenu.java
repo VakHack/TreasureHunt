@@ -25,8 +25,8 @@ public class MainMenu extends AppCompatActivity {
     final Context myContext = this;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
-    final private String BUTTONS_FONT = db.getLanguageImp() instanceof HebrewImp ? "fonts/GveretLevin.ttf" : "fonts/PatrickHand.ttf";
-    final private int TEXT_SIZE = db.getLanguageImp() instanceof HebrewImp ? 30 : 25;
+    final private String BUTTONS_FONT = db.getLanguageImp() instanceof HebrewImp ? "fonts/Keset.ttf" : "fonts/PatrickHand.ttf";
+    final private int TEXT_SIZE = db.getLanguageImp() instanceof HebrewImp ? 35 : 25;
     private final int INTERVAL = 2000;
     private final int MAX_NUM_OF_INTERVALS = 4;
     private final int MAX_WAIT_DURATION = INTERVAL * MAX_NUM_OF_INTERVALS;

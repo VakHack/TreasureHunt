@@ -188,7 +188,7 @@ public class HebrewImp implements LanguageImp {
 
     @Override
     public String instructorStartGameSecondary() {
-        return "כפתור ה-play יפיק לך קוד יחודי למשחק שלך. העתק והעבר אותו לשחקנים";
+        return "כפתור השמירה יפיק לך קוד יחודי למשחק שלך. העתק והעבר אותו לשחקנים";
     }
 
     @Override
@@ -219,5 +219,15 @@ public class HebrewImp implements LanguageImp {
     @Override
     public String playerLocateSecondary() {
         return "מצאו את מיקומכם הנוכחי";
+    }
+
+    @Override
+    public String gameSavedSuccessfully() {
+        return "המשחק נשמר בהצלחה!";
+    }
+
+    @Override
+    public String tryAgain() {
+        return "משהו קרה. נסו שנית";
     }
 }

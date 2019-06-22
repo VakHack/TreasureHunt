@@ -25,6 +25,8 @@ public class InstructorLogin extends AppCompatActivity {
     private final int MAX_NUM_OF_INTERVALS = 4;
     private final int MAX_WAIT_DURATION = INTERVAL * MAX_NUM_OF_INTERVALS;
     final Context myContext = this;
+    private String currentEmail;
+    private String currentPassword;
 
     public void showToast(final String toast)
     {
@@ -60,10 +62,10 @@ public class InstructorLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                final String currentEmail = email.getText().toString();
-                final String currentPassword = password.getText().toString();
                 password.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 email.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                currentEmail = email.getText().toString();
+                currentPassword = password.getText().toString();
                 new Thread(new Runnable() {
                     public void run() {
                         int currentWaitTime = 0;
@@ -82,11 +84,13 @@ public class InstructorLogin extends AppCompatActivity {
                         while (!db.downloadGameData() && currentWaitTime <= MAX_WAIT_DURATION) {
                             SystemClock.sleep(INTERVAL);
                             currentWaitTime += INTERVAL;
-                            if(db.isNewInstructor()) break;
+                            if(db.isNewInstructor()){
+                                break;
+                            }
                         }
                         if (currentWaitTime >= MAX_WAIT_DURATION)
                         {
-                            showToast(db.getDownloadFeedback());
+                            showToast(db.getLanguageImp().tryAgain());
                             progressBar.setVisibility(View.INVISIBLE);
                             return;
                         }

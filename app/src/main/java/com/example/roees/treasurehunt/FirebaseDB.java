@@ -84,13 +84,6 @@ public class FirebaseDB implements TreasureHuntDB {
     public void pushRiddle(LatLng riddle, String coordinate) {
         Pair<LatLng, String> newRNC = new Pair<>(riddle, coordinate);
         RNCMap.put(RNCMap.size() + 1, newRNC);
-        while (!fb.tryUploadData(new RiddlesNCoordinates(RNCMap))) {
-            try {
-                appContext.wait(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         Toast.makeText(appContext, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
     }
 
@@ -112,6 +105,7 @@ public class FirebaseDB implements TreasureHuntDB {
         boolean isInstructor = appMap.getBoolean(IS_INSTRUCTOR, false);
         String uid = isInstructor ? appMap.getString(UID, "") : appMap.getString(PLAYER_GAME_CODE, "");
         if (fb.tryRetrieveData(uid)) {
+            debugGetMapContent();
             return getSavedGame();
         } else return false;
     }
@@ -175,7 +169,6 @@ public class FirebaseDB implements TreasureHuntDB {
             RNCMap.put(i, RNCMap.get(i + 1));
         }
         RNCMap.remove(RNCMap.size());
-        fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
     }
 
     @Override
@@ -250,5 +243,10 @@ public class FirebaseDB implements TreasureHuntDB {
     @Override
     public boolean isNewInstructor() {
         return fb.isUserContentEmpty();
+    }
+
+    @Override
+    public boolean saveGame() {
+        return fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
     }
 }

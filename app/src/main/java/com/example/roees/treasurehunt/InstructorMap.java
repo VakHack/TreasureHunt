@@ -1,6 +1,7 @@
 package com.example.roees.treasurehunt;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,10 +11,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -40,7 +41,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private Button deleteMarker;
     private Button enterRiddle;
     private Button logout;
-    private Button play;
+    private Button saveButton;
     private Button instructorShowcase;
     private Marker activatedMarker = null;
     private EditText riddleLine;
@@ -53,11 +54,23 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
     private ShowcaseHandler showcaseHandler;
+    private final int INTERVAL = 1000;
 
     void zoomToCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                while (ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    SystemClock.sleep(INTERVAL);
+                }
+                zoomToLocation();
+            }
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    void zoomToLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -78,7 +91,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     }
 
     void addSavedMarkers() {
-        for(int i=1; i <=db.getNumOfRiddles();++i) {
+        for (int i = 1; i <= db.getNumOfRiddles(); ++i) {
             map.addMarker(new MarkerOptions().position(db.getCoordinationByNum(i)));
         }
     }
@@ -96,12 +109,12 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         instructions.add(new Pair<View, Pair<String, String>>(mockupLayout, new Pair<>(db.getLanguageImp().instructorClickMarkerPrimary(), db.getLanguageImp().instructorClickMarkerSecondary())));
         instructions.add(new Pair<View, Pair<String, String>>(deleteMarker, new Pair<>(db.getLanguageImp().instructorDeleteMarkerPrimary(), db.getLanguageImp().instructorDeleteMarkerSecondary())));
         instructions.add(new Pair<View, Pair<String, String>>(locationBackground, new Pair<>(db.getLanguageImp().instructorLocatePrimary(), db.getLanguageImp().instructorLocateSecondary())));
-        instructions.add(new Pair<View, Pair<String, String>>(play, new Pair<>(db.getLanguageImp().instructorStartGamePrimary(), db.getLanguageImp().instructorStartGameSecondary())));
+        instructions.add(new Pair<View, Pair<String, String>>(saveButton, new Pair<>(db.getLanguageImp().instructorStartGamePrimary(), db.getLanguageImp().instructorStartGameSecondary())));
         showcaseHandler = new ShowcaseHandler(this, instructions);
     }
 
-    void runRelevantShowcaseIfActive(){
-        if(db.isShowCaseActive()) showcaseHandler.callRelevantShowcase();
+    void runRelevantShowcaseIfActive() {
+        if (db.isShowCaseActive()) showcaseHandler.callRelevantShowcase();
     }
 
     void initGoogleMapUtils(GoogleMap googleMap) {
@@ -126,10 +139,33 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
-    void deletePreviousMarkerIfNotSaved(){
-        if(activatedMarker!= null && db.getNumByCoordinate(activatedMarker.getPosition())==null) {
+    void deletePreviousMarkerIfNotSaved() {
+        if (activatedMarker != null && db.getNumByCoordinate(activatedMarker.getPosition()) == null) {
             activatedMarker.remove();
         }
+    }
+
+    void saveGameDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
+        alertDialog.setTitle(db.getLanguageImp().gameSavedSuccessfully());
+        alertDialog.setMessage(db.getLanguageImp().newGameCodeTitle() + ": " + db.getInstructorGameCode());
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, db.getLanguageImp().copyGameCodeButton(),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //copy code to clipboard
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("game code", db.getInstructorGameCode());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().gameCodeCopiedSuccessfully(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        alertDialog.show();
     }
 
     @Override
@@ -143,7 +179,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         riddleLine = findViewById(R.id.riddleLine);
         enterRiddle = findViewById(R.id.enterRiddle);
         logout = findViewById(R.id.logout);
-        play = findViewById(R.id.play);
+        saveButton = findViewById(R.id.save);
         mockupLayout = findViewById(R.id.mockupLayout);
         locationBackground = findViewById(R.id.instructorLocationBackground);
         instructorShowcase = findViewById(R.id.instructorShowcase);
@@ -165,7 +201,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onMapClick(LatLng latLng) {
                 runRelevantShowcaseIfActive();
-                if(latLng==null) return;
+                if (latLng == null) return;
                 deletePreviousMarkerIfNotSaved();
                 String riddle = db.getRiddleByCoordinate(latLng);
                 if (riddle == null) riddleLine.setHint(DEFAULT_RIDDLE_HINT);
@@ -181,7 +217,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                 runRelevantShowcaseIfActive();
                 if (activatedMarker != null) {
                     Integer riddleNum = db.getNumByCoordinate(activatedMarker.getPosition());
-                    if(riddleNum!=null)db.removeRiddleByNum(riddleNum);
+                    if (riddleNum != null) db.removeRiddleByNum(riddleNum);
                     activatedMarker.remove();
                     activatedMarker = null;
                     buttonsVisibility(View.INVISIBLE);
@@ -231,30 +267,19 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
-        play.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
-                alertDialog.setTitle(db.getLanguageImp().newGameCodeTitle());
-                alertDialog.setMessage(db.getInstructorGameCode());
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, db.getLanguageImp().copyGameCodeButton(),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //copy code to clipboard
-                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("game code", db.getInstructorGameCode());
-                                clipboard.setPrimaryClip(clip);
-                                Toast.makeText(myContext, FirebaseDB.getInstance().getLanguageImp().gameCodeCopiedSuccessfully(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                alertDialog.show();
                 db.toggleShowcase(false);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (!db.saveGame()) {
+                            SystemClock.sleep(INTERVAL);
+                        }
+                        saveGameDialog();
+                    }
+                });
             }
         });
     }
@@ -263,7 +288,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         runRelevantShowcaseIfActive();
         deletePreviousMarkerIfNotSaved();
-        if(marker==null) return false;
+        if (marker == null) return false;
         activatedMarker = marker;
         buttonsVisibility(View.VISIBLE);
         riddleLine.setText("");
