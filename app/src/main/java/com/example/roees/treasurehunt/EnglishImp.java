@@ -53,12 +53,12 @@ public class EnglishImp implements LanguageImp {
 
     @Override
     public String addNewRiddle() {
-        return "Enter riddle here";
+        return "Enter clue here";
     }
 
     @Override
     public String riddleAddedSuccessfully() {
-        return "Riddle added successfully";
+        return "Clue added successfully";
     }
 
     @Override
@@ -88,7 +88,7 @@ public class EnglishImp implements LanguageImp {
 
     @Override
     public String riddleTitle() {
-        return "Riddle Number ";
+        return "Clue Number ";
     }
 
     @Override

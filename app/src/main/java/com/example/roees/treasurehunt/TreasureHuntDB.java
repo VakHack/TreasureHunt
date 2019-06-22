@@ -34,6 +34,6 @@ public interface TreasureHuntDB {
     String getSavedPassword();
 
     //showcase functions
-    void toggleShowcase();
+    void toggleShowcase(boolean isShowcaseActive);
     boolean isShowCaseActive();
 }

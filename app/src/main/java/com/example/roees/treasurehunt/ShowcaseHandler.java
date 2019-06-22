@@ -17,6 +17,10 @@ public class ShowcaseHandler {
         this.instructions = instructions;
     }
 
+    public void initShowcase(){
+        num = 0;
+    }
+
     public void callRelevantShowcase() {
         if(instructions.size()<=num) return;
         Pair<View, Pair<String, String>> current = instructions.get(num);

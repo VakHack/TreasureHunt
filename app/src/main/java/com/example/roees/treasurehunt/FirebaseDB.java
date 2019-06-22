@@ -236,9 +236,9 @@ public class FirebaseDB implements TreasureHuntDB {
     }
 
     @Override
-    public void toggleShowcase() {
+    public void toggleShowcase(boolean isShowcaseActive) {
         appMapEditor = appMap.edit();
-        appMapEditor.putBoolean(IS_SHOWCASE_ACTIVE, !isShowCaseActive());
+        appMapEditor.putBoolean(IS_SHOWCASE_ACTIVE, isShowcaseActive);
         appMapEditor.apply();
     }
 

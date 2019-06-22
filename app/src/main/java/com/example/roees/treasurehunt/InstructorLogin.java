@@ -19,7 +19,6 @@ public class InstructorLogin extends AppCompatActivity {
     Button submit;
     EditText password;
     EditText email;
-    final Context myContext = this;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
 

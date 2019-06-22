@@ -40,6 +40,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private Button enterRiddle;
     private Button logout;
     private Button play;
+    private Button instructorShowcase;
     private Marker activatedMarker = null;
     private EditText riddleLine;
     private ImageView mockupLayout;
@@ -138,6 +139,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         play = findViewById(R.id.play);
         mockupLayout = findViewById(R.id.mockupLayout);
         locationBackground = findViewById(R.id.instructorLocationBackground);
+        instructorShowcase = findViewById(R.id.instructorShowcase);
         db.downloadGameData();
     }
 
@@ -202,6 +204,16 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
+        instructorShowcase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.toggleShowcase(true);
+                showcaseHandler.initShowcase();
+                locationBackground.setVisibility(View.VISIBLE);
+                runRelevantShowcaseIfActive();
+            }
+        });
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,7 +246,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
                             }
                         });
                 alertDialog.show();
-                db.toggleShowcase();
+                db.toggleShowcase(false);
             }
         });
     }

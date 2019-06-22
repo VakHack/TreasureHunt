@@ -37,6 +37,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
     private Button riddle;
     private Button verifyLocation;
     private ImageView locationBackground;
+    private Button playerShowcase;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     final Context myContext = this;
     final int MAX_DISTANCE_TO_DESTINATION = 50;
@@ -125,6 +126,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
         verifyLocation = findViewById(R.id.verifyLocation);
         verifyLocation.setText(db.getLanguageImp().IAmHere());
         locationBackground = findViewById(R.id.playerLocationBackground);
+        playerShowcase = findViewById(R.id.playerShowcase);
     }
 
     @Override
@@ -171,6 +173,16 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                             }
                         });
                 alertDialog.show();
+            }
+        });
+
+        playerShowcase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.toggleShowcase(true);
+                showcaseHandler.initShowcase();
+                locationBackground.setVisibility(View.VISIBLE);
+                runRelevantShowcaseIfActive();
             }
         });
 
