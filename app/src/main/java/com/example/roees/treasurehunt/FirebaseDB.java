@@ -105,7 +105,6 @@ public class FirebaseDB implements TreasureHuntDB {
         boolean isInstructor = appMap.getBoolean(IS_INSTRUCTOR, false);
         String uid = isInstructor ? appMap.getString(UID, "") : appMap.getString(PLAYER_GAME_CODE, "");
         if (fb.tryRetrieveData(uid)) {
-            debugGetMapContent();
             return getSavedGame();
         } else return false;
     }

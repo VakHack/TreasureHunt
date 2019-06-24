@@ -11,6 +11,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -161,7 +162,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
                 runRelevantShowcaseIfActive();
                 String title = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + (db.getPlayerCurrentMarker() + 1)
                         : db.getLanguageImp().congratulations();
-                String message = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker()))
+                String message = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker() + 1))
                         : db.getLanguageImp().finishedSuccessfully();
                 AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
                 alertDialog.setTitle(title);
