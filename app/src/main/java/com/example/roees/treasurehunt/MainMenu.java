@@ -103,9 +103,9 @@ public class MainMenu extends AppCompatActivity {
         enterCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
                 String codeText = gameCodeLine.getText().toString();
                 if (!codeText.isEmpty()) {
+                    progressBar.setVisibility(View.VISIBLE);
                     db.setPlayerGameCode(codeText);
                     db.playerEntrance(codeText);
                     new Thread(new Runnable() {
