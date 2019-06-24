@@ -15,6 +15,7 @@ import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -78,7 +79,7 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     }
 
     void addSavedMarkers() {
-        for (int i = 1; i <= db.getNumOfRiddles(); ++i) {
+        for (int i = 0; i < db.getNumOfRiddles(); ++i) {
             map.addMarker(new MarkerOptions().position(db.getCoordinationByNum(i)));
         }
     }

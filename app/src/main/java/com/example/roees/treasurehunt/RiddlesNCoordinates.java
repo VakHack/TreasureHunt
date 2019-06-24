@@ -7,35 +7,37 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Vector;
 
 public class RiddlesNCoordinates implements Serializable {
     private static final long serialVersionUID = 6529685098267757690L;
-    private Map<Integer, String> riddlesNCoordinates = new HashMap<>();
+    private LinkedList<String> riddlesNCoordinates = new LinkedList<>();
 
-    public RiddlesNCoordinates(Map<Integer, Pair<LatLng, String>> riddlesNCoordinates) {
+    public RiddlesNCoordinates(LinkedList<Pair<LatLng, String>> riddlesNCoordinates) {
         convertMapToSerializable(riddlesNCoordinates);
     }
 
-    public Map<Integer, Pair<LatLng, String>> get() {
+    public LinkedList<Pair<LatLng, String>> get() {
         return convertSerializableToMap();
     }
 
-    private void convertMapToSerializable(Map<Integer, Pair<LatLng, String>> riddlesNCoordinates) {
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : riddlesNCoordinates.entrySet()) {
-            String strLatLng = entry.getValue().first.latitude + " " + entry.getValue().first.longitude;
-            String strPair = strLatLng+" "+entry.getValue().second;
-            this.riddlesNCoordinates.put(entry.getKey(), strPair);
+    private void convertMapToSerializable(LinkedList<Pair<LatLng, String>> riddlesNCoordinates) {
+        for (Pair<LatLng, String> entry : riddlesNCoordinates) {
+            String strLatLng = entry.first.latitude + " " + entry.first.longitude;
+            String strPair = strLatLng+" "+entry.second;
+            this.riddlesNCoordinates.add(strPair);
         }
     }
 
-    private Map<Integer, Pair<LatLng, String>> convertSerializableToMap() {
-        Map<Integer, Pair<LatLng, String>> retval = new HashMap<>();
-        for (Map.Entry<Integer, String> entry : riddlesNCoordinates.entrySet()) {
-            String[] split = entry.getValue().split(" ");
+    private LinkedList<Pair<LatLng, String>> convertSerializableToMap() {
+        LinkedList<Pair<LatLng, String>> retval = new LinkedList<>();
+        for (String entry : riddlesNCoordinates) {
+            String[] split = entry.split(" ");
             LatLng latLng = new LatLng(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
             Pair<LatLng, String> newPair = new Pair(latLng, split[2]);
-            retval.put(entry.getKey(), newPair);
+            retval.add(newPair);
         }
         return retval;
     }

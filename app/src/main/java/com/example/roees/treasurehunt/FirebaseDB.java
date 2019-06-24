@@ -10,8 +10,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -33,17 +35,17 @@ public class FirebaseDB implements TreasureHuntDB {
     private final String PLAYER_CURRENT_MARKER = "PLAYER_CURRENT_MARKER";
     private Context appContext;
     private static final FirebaseDB ourInstance = new FirebaseDB();
-    private Map<Integer, Pair<LatLng, String>> RNCMap = new HashMap<>();
+    private LinkedList<Pair<LatLng, String>> RNCArr = new LinkedList<>();
 
     public static FirebaseDB getInstance() {
         return ourInstance;
     }
 
     private void debugGetMapContent() {
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()) {
+        for (Pair<LatLng, String> entry : RNCArr) {
             Log.e("th_log", entry + "");
         }
-        Log.e("th_log", "size: " + RNCMap.size());
+        Log.e("th_log", "size: " + RNCArr.size());
     }
 
     private FirebaseDB() {
@@ -83,7 +85,7 @@ public class FirebaseDB implements TreasureHuntDB {
     @Override
     public void pushRiddle(LatLng riddle, String coordinate) {
         Pair<LatLng, String> newRNC = new Pair<>(riddle, coordinate);
-        RNCMap.put(RNCMap.size() + 1, newRNC);
+        RNCArr.add(newRNC);
         Toast.makeText(appContext, FirebaseDB.getInstance().getLanguageImp().riddleAddedSuccessfully(), Toast.LENGTH_SHORT).show();
     }
 
@@ -95,7 +97,7 @@ public class FirebaseDB implements TreasureHuntDB {
     private boolean getSavedGame() {
         RiddlesNCoordinates newRNC = (RiddlesNCoordinates) fb.getRetrievedData();
         if (newRNC != null) {
-            RNCMap = newRNC.get();
+            RNCArr = newRNC.get();
             return true;
         } else return false;
     }
@@ -141,22 +143,22 @@ public class FirebaseDB implements TreasureHuntDB {
 
     @Override
     public LatLng getCoordinationByNum(Integer num) {
-        return RNCMap.get(num).first;
+        return RNCArr.get(num).first;
     }
 
     @Override
     public String getRiddleByCoordinate(LatLng latLng) {
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet())
-            if (entry.getValue().first.equals(latLng))
-                return entry.getValue().second;
+        for (Pair<LatLng, String> entry : RNCArr)
+            if (entry.first.equals(latLng))
+                return entry.second;
         return null;
     }
 
     @Override
     public Integer getNumByCoordinate(LatLng latLng) {
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()) {
-            if (entry.getValue().first.equals(latLng)) {
-                return entry.getKey();
+        for (int i=0; i<RNCArr.size(); ++i) {
+            if (RNCArr.get(i).first.equals(latLng)) {
+                return i + 1;
             }
         }
         return null;
@@ -164,22 +166,19 @@ public class FirebaseDB implements TreasureHuntDB {
 
     @Override
     public void removeRiddleByNum(Integer num) {
-        for (int i = num; i < RNCMap.size(); ++i) {
-            RNCMap.put(i, RNCMap.get(i + 1));
-        }
-        RNCMap.remove(RNCMap.size());
+        RNCArr.remove(num - 1);
     }
 
     @Override
     public Integer getNumOfRiddles() {
-        return RNCMap.size();
+        return RNCArr.size();
     }
 
     @Override
     public LatLng coordinateInCloseProximity(LatLng latLng, int maxDistance) {
-        for (Map.Entry<Integer, Pair<LatLng, String>> entry : RNCMap.entrySet()) {
-            if (SphericalUtil.computeDistanceBetween(entry.getValue().first, latLng) < maxDistance) {
-                return entry.getValue().first;
+        for (Pair<LatLng, String> entry : RNCArr) {
+            if (SphericalUtil.computeDistanceBetween(entry.first, latLng) < maxDistance) {
+                return entry.first;
             }
         }
         return null;
@@ -246,6 +245,6 @@ public class FirebaseDB implements TreasureHuntDB {
 
     @Override
     public boolean saveGame() {
-        return fb.tryUploadData(new RiddlesNCoordinates(RNCMap));
+        return fb.tryUploadData(new RiddlesNCoordinates(RNCArr));
     }
 }
