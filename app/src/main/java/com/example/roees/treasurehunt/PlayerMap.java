@@ -89,7 +89,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
     }
 
     void addMarkersUntilCurrentMarker() {
-        for (int i = 1; i <= db.getPlayerCurrentMarker(); ++i) {
+        for (int i = 0; i < db.getPlayerCurrentMarker(); ++i) {
             LatLng coordinate = db.getCoordinationByNum(i);
             addRelevantMarker(i, coordinate);
         }
