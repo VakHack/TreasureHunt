@@ -1,9 +1,18 @@
 package com.example.roees.treasurehunt;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.SystemClock;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,12 +35,13 @@ public class MainMenu extends AppCompatActivity {
     private TreasureHuntDB db = FirebaseDB.getInstance();
     ProgressBar progressBar;
     final private String BUTTONS_FONT = db.getLanguageImp() instanceof HebrewImp ? "fonts/Keset.ttf" : "fonts/PatrickHand.ttf";
-    final private int TEXT_SIZE = db.getLanguageImp() instanceof HebrewImp ? 35 : 25;
+    final private int TEXT_SIZE = db.getLanguageImp() instanceof HebrewImp ? 36 : 25;
     private final int INTERVAL = 2000;
     private final int MAX_NUM_OF_INTERVALS = 4;
     private final int MAX_WAIT_DURATION = INTERVAL * MAX_NUM_OF_INTERVALS;
 
-    public void showToast(final String toast)
+
+    private void showToast(final String toast)
     {
         runOnUiThread(new Runnable() {
             @Override
@@ -41,6 +51,39 @@ public class MainMenu extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void askPermission(){
+        requestPermissions(new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, 1); // 1 is requestCode
+    }
+
+    private void allowGpsDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
+        alertDialog.setTitle(db.getLanguageImp().allowGpsTitle());
+        alertDialog.setMessage(db.getLanguageImp().allowGpsContent());
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, db.getLanguageImp().OKButton(),
+            new DialogInterface.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
+                public void onClick(DialogInterface dialog, int which) {
+                    askPermission();
+                }
+            });
+        alertDialog.show();
+    }
+
+    private void gpsPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (ActivityCompat.checkSelfPermission
+                    (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                allowGpsDialog();
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +91,7 @@ public class MainMenu extends AppCompatActivity {
 
         //adding context to DB
         db.initContext(this);
+        gpsPermission();
 
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.INVISIBLE);

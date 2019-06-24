@@ -230,4 +230,14 @@ public class HebrewImp implements LanguageImp {
     public String tryAgain() {
         return "משהו קרה. נסו שנית";
     }
+
+    @Override
+    public String allowGpsTitle() {
+        return "ברוכים הבאים!";
+    }
+
+    @Override
+    public String allowGpsContent() {
+        return "האפליקציה מבוססת על שימוש בנתוני GPS. נא אשרו את השימוש בהם בהודעה העוקבת";
+    }
 }

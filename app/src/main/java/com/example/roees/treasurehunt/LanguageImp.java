@@ -29,6 +29,8 @@ public abstract interface LanguageImp {
     public String congratulations();
     public String finishedSuccessfully();
     public String tryAgain();
+    public String allowGpsTitle();
+    public String allowGpsContent();
 
     //showcase content
     public String instructorClickMapPrimary();

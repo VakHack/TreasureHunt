@@ -35,9 +35,9 @@
 
     <ImageView
         android:layout_below="@id/sub"
-        android:layout_marginTop="30pt"
+        android:layout_marginTop="25pt"
         android:layout_width="wrap_content"
-        android:layout_height="180dp"
+        android:layout_height="155dp"
         android:src="@drawable/treasure_theme"/>
 
 </RelativeLayout>

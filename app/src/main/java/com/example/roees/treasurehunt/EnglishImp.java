@@ -230,4 +230,14 @@ public class EnglishImp implements LanguageImp {
     public String tryAgain() {
         return "Something happened. Please try again";
     }
+
+    @Override
+    public String allowGpsTitle() {
+        return "Welcome!";
+    }
+
+    @Override
+    public String allowGpsContent() {
+        return "This app is GPS based. Please approve the usage of location services on the following message";
+    }
 }

@@ -56,19 +56,6 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private ShowcaseHandler showcaseHandler;
     private final int INTERVAL = 1000;
 
-    void zoomToCurrentLocation() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                while (ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    SystemClock.sleep(INTERVAL);
-                }
-                zoomToLocation();
-            }
-        });
-    }
-
     @SuppressLint("MissingPermission")
     void zoomToLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -189,13 +176,13 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         map = googleMap;
+        initGoogleMapUtils(googleMap);
+        zoomToLocation();
         googleMap.setOnMarkerClickListener(this);
         buttonsVisibility(View.INVISIBLE);
-        initGoogleMapUtils(googleMap);
         addSavedMarkers();
         initShowCase();
         runRelevantShowcaseIfActive();
-        zoomToCurrentLocation();
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
