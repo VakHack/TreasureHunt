@@ -37,6 +37,7 @@
             android:background="@android:color/transparent"
             android:layout_marginTop="35dp"
             android:drawableTop="@drawable/enter"
+            android:drawablePadding="-50px"
             android:drawableTint="@color/quantum_bluegrey900" />
 
         <ProgressBar

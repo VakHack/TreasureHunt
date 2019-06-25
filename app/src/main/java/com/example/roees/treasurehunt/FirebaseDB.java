@@ -187,13 +187,13 @@ public class FirebaseDB implements TreasureHuntDB {
     @Override
     public void setPlayerCurrentMarker(int num) {
         appMapEditor = appMap.edit();
-        appMapEditor.putInt(PLAYER_CURRENT_MARKER, num);
+        appMapEditor.putInt(PLAYER_CURRENT_MARKER, num - 1);
         appMapEditor.apply();
     }
 
     @Override
     public int getPlayerCurrentMarker() {
-        return appMap.getInt(PLAYER_CURRENT_MARKER, 0);
+        return appMap.getInt(PLAYER_CURRENT_MARKER, 0) + 1;
     }
 
     @Override

@@ -41,7 +41,7 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
     private Button playerShowcase;
     private TreasureHuntDB db = FirebaseDB.getInstance();
     final Context myContext = this;
-    final int MAX_DISTANCE_TO_DESTINATION = 50;
+    final int MAX_DISTANCE_TO_DESTINATION = 5;
     final float ZOOM_FACTOR = 20;
     final LatLng DEFAULT_LATLNG = new LatLng(32.109333, 34.855499);
     private LatLng myLoc = DEFAULT_LATLNG;
@@ -160,9 +160,9 @@ public class PlayerMap extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 runRelevantShowcaseIfActive();
-                String title = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + (db.getPlayerCurrentMarker() + 1)
+                String title = db.getPlayerCurrentMarker() <= db.getNumOfRiddles() ? db.getLanguageImp().riddleTitle() + (db.getPlayerCurrentMarker() + 1)
                         : db.getLanguageImp().congratulations();
-                String message = db.getPlayerCurrentMarker() < db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker() + 1))
+                String message = db.getPlayerCurrentMarker() <= db.getNumOfRiddles() ? db.getRiddleByCoordinate(db.getCoordinationByNum(db.getPlayerCurrentMarker() + 1))
                         : db.getLanguageImp().finishedSuccessfully();
                 AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
                 alertDialog.setTitle(title);
