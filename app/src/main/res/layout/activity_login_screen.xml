@@ -96,7 +96,7 @@
                 android:layout_height="30pt"
                 android:background="@android:color/transparent"
                 android:drawableTint="@color/quantum_bluegrey900"
-                android:drawableEnd="@drawable/baseline_check_circle_black_36" />
+                android:drawableEnd="@drawable/large_check" />
 
             <EditText
                 android:id="@+id/gameCodeLine"

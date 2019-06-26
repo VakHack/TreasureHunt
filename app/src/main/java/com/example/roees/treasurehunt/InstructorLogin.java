@@ -95,6 +95,7 @@ public class InstructorLogin extends AppCompatActivity {
                             return;
                         }
                         startActivity(instructorMapScreen);
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 }).start();
             }
