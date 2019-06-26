@@ -1,4 +1,4 @@
-package com.example.roees.treasurehunt;
+package com.vackhack.roees.treasurehunt;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -11,7 +11,6 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;

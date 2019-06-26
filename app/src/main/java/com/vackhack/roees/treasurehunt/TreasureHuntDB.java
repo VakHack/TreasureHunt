@@ -1,4 +1,4 @@
-package com.example.roees.treasurehunt;
+package com.vackhack.roees.treasurehunt;
 import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;

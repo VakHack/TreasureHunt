@@ -1,4 +1,4 @@
-package com.example.roees.treasurehunt;
+package com.vackhack.roees.treasurehunt;
 
 import android.content.Intent;
 import android.graphics.Typeface;

@@ -1,15 +1,11 @@
-package com.example.roees.treasurehunt;
+package com.vackhack.roees.treasurehunt;
 
-import android.util.Log;
 import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Vector;
 
 public class RiddlesNCoordinates implements Serializable {
     private static final long serialVersionUID = 6529685098267757690L;

@@ -1,9 +1,7 @@
-package com.example.roees.treasurehunt;
+package com.vackhack.roees.treasurehunt;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;

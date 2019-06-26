@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.roees.treasurehunt">
+    package="com.vackhack.roees.treasurehunt">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -23,16 +23,16 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
         <activity
-            android:name=".PlayerMap"
+            android:name="com.vackhack.roees.treasurehunt.PlayerMap"
             android:label="@string/title_activity_player_map"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".InstructorMap"
+            android:name="com.vackhack.roees.treasurehunt.InstructorMap"
             android:label="@string/title_activity_instructor_map"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SplashScreen"
+            android:name="com.vackhack.roees.treasurehunt.SplashScreen"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,10 +40,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InstructorLogin"
+            android:name="com.vackhack.roees.treasurehunt.InstructorLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainMenu"
+            android:name="com.vackhack.roees.treasurehunt.MainMenu"
             android:screenOrientation="portrait" />
     </application>
 

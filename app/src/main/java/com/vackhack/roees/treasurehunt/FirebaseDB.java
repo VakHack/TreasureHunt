@@ -1,4 +1,4 @@
-package com.example.roees.treasurehunt;
+package com.vackhack.roees.treasurehunt;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,11 +9,8 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
 

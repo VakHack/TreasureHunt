@@ -1,6 +1,4 @@
-package com.example.roees.treasurehunt;
-
-import com.google.android.gms.maps.model.LatLng;
+package com.vackhack.roees.treasurehunt;
 
 public abstract interface LanguageImp {
     public String createGame();
