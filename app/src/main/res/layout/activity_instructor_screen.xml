@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:layout_marginTop="35dp"
-            android:drawableTop="@drawable/enter"
+            android:drawableTop="@drawable/baseline_check_circle_black_48"
             android:drawablePadding="-50px"
             android:drawableTint="@color/quantum_bluegrey900" />
 
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:indeterminateTint="@color/quantum_bluegrey900"
             android:indeterminateTintMode="src_in"
-            android:layout_height="30pt"
+            android:layout_height="20pt"
             android:layout_marginTop="20pt" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
