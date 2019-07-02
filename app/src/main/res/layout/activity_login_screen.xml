@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="35pt"
+            android:layout_marginTop="25pt"
             app:srcCompat="@drawable/pirate" />
 
         <LinearLayout
@@ -25,7 +25,7 @@
             android:layout_width="130pt"
             android:layout_height="30pt"
             android:layout_below="@id/pirate"
-            android:layout_marginTop="30pt"
+            android:layout_marginTop="25pt"
             android:layout_centerHorizontal="true"
             android:orientation="horizontal">
 

@@ -21,7 +21,6 @@ public class FirebaseDB implements TreasureHuntDB {
     private LanguageImp languageImp;
     private SharedPreferences appMap;
     private SharedPreferences.Editor appMapEditor;
-    private final String LOGGED_IN_CLOUD = "LOGGED_IN";
     private final String USER_PASSWORD = "USER_PASSWORD";
     private final String USERNAME = "USERNAME";
     private final String IS_INSTRUCTOR = "IS_INSTRUCTOR";

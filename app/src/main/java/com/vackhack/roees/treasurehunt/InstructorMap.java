@@ -55,6 +55,8 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
     private LatLng myLoc = DEFAULT_LATLNG;
     private ShowcaseHandler showcaseHandler;
     private final int INTERVAL = 1000;
+    private final int MAX_NUM_OF_INTERVALS = 4;
+    private final int MAX_WAIT_DURATION = INTERVAL * MAX_NUM_OF_INTERVALS;
 
     @SuppressLint("MissingPermission")
     void zoomToLocation() {
@@ -130,6 +132,16 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         if (activatedMarker != null && db.getNumByCoordinate(activatedMarker.getPosition()) == null) {
             activatedMarker.remove();
         }
+    }
+
+    private void showToast(final String toast)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(myContext, toast, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     void saveGameDialog() {
@@ -257,14 +269,22 @@ public class InstructorMap extends FragmentActivity implements OnMapReadyCallbac
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.toggleShowcase(false);
+                if (db.isShowCaseActive()){
+                    db.toggleShowcase(false);
+                    return;
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        while (!db.saveGame()) {
+                        int currentWaitTime = 0;
+                        while (!db.saveGame() && currentWaitTime <= MAX_WAIT_DURATION) {
                             SystemClock.sleep(INTERVAL);
+                            currentWaitTime += INTERVAL;
                         }
-                        saveGameDialog();
+                        if (currentWaitTime < MAX_WAIT_DURATION) saveGameDialog();
+                        else {
+                            showToast(FirebaseDB.getInstance().getLanguageImp().tryAgain());
+                        }
                     }
                 });
             }
