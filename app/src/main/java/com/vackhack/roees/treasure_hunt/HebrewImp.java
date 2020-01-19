@@ -1,134 +1,134 @@
-package com.vackhack.roees.treasurehunt;
+package com.vackhack.roees.treasure_hunt;
 
-public class EnglishImp implements LanguageImp {
+public class HebrewImp implements LanguageImp {
     @Override
     public String createGame() {
-        return "Create game";
+        return "צור משחק";
     }
 
     @Override
     public String joinGame() {
-        return "Player entrance";
+        return "כניסת שחקן";
     }
 
     @Override
     public String instructorEntrance() {
-        return "Instructor entrance";
+        return "כניסת מפעיל";
     }
 
     @Override
     public String enterGameCode() {
-        return "Enter game";
+        return "הכנס קוד משחק";
     }
 
     @Override
     public String enterPassword() {
-        return "Enter password";
+        return "הכנס סיסמא";
     }
 
     @Override
     public String enterEmail() {
-        return "Enter email";
+        return "הכנס אימייל";
     }
 
     @Override
     public String submit() {
-        return "Submit";
+        return "כניסה";
     }
 
     @Override
     public String alreadyLogged() {
-        return "You are already logged in";
+        return "כבר התחברת";
     }
 
     @Override
     public String successfullyLoggedIn() {
-        return "Logged in successfully!";
+        return "התחברת בהצלחה!";
     }
 
     @Override
     public String successfullyRegistered() {
-        return "Registration succeeded";
+        return "רישום בוצע בהצלחה!";
     }
 
     @Override
     public String addNewRiddle() {
-        return "Enter clue here";
+        return "הכנס חידה כאן";
     }
 
     @Override
     public String riddleAddedSuccessfully() {
-        return "Clue added successfully";
+        return "חידה נוספה בהצלחה!";
     }
 
     @Override
     public String gameLoadedSuccessfully() {
-        return "Game loaded successfully";
+        return "משחק נטען בהצלחה";
     }
 
     @Override
     public String newGameCodeTitle() {
-        return "Game entrance code";
+        return "קוד ההצטרפות למשחק";
     }
 
     @Override
     public String copyGameCodeButton() {
-        return "Copy to clipboard";
+        return "העתק ללוח";
     }
 
     @Override
     public String gameCodeCopiedSuccessfully() {
-        return "Code copied successfully!";
+        return "קוד הועתק בהצלחה!";
     }
 
     @Override
     public String OKButton() {
-        return "OK";
+        return "אישור";
     }
 
     @Override
     public String riddleTitle() {
-        return "Clue Number ";
+        return "חידה מספר ";
     }
 
     @Override
     public String IAmHere() {
-        return "Dig";
+        return "הגעתי";
     }
 
     @Override
     public String cannotFindLocation() {
-        return "Cannot find your location, please try again";
+        return "לא מצליח למצוא את מיקומך, אנא נסה שנית";
     }
 
     @Override
     public String notInLocation() {
-        return "Not yet there!";
+        return "עדיין לא שם!";
     }
 
     @Override
     public String wrongCode() {
-        return "Wrong code, please try again";
+        return "קוד שגוי, נסה שנית";
     }
 
     @Override
     public String congratulations() {
-        return "Congratulations!";
+        return "כל הכבוד!";
     }
 
     @Override
     public String finishedSuccessfully() {
-        return "The treasure is yours";
+        return "האוצר שלך";
     }
 
     @Override
     public String instructorClickMapPrimary() {
-        return "Add new location to the game";
+        return "הוסף נקודת ציון";
     }
 
     @Override
     public String instructorClickMapSecondary() {
-        return "By clicking the map";
+        return "לחיצה על המפה תוסיף נקודה חדשה למשחק";
     }
 
     @Override
@@ -138,7 +138,7 @@ public class EnglishImp implements LanguageImp {
 
     @Override
     public String instructorEnterRiddleSecondary() {
-        return "Here you can enter the clue leading the selected location";
+        return "כאן תוכל להזין את הרמז, שמוביל את השחקנים לנקודה זו";
     }
 
     @Override
@@ -148,96 +148,96 @@ public class EnglishImp implements LanguageImp {
 
     @Override
     public String instructorSendRiddleSecondary() {
-        return "Save location here";
+        return "לחץ כאן לשמירת החידה";
     }
 
     @Override
     public String instructorClickMarkerPrimary() {
-        return "You can always re-read and edit the clue";
+        return "תוכלו תמיד לראות את החידה ולערוך אותה";
     }
 
     @Override
     public String instructorClickMarkerSecondary() {
-        return "Just tap the clue marker";
+        return "נעשה זאת על ידי לחיצה על המקום בו הוכנסה";
     }
 
     @Override
     public String instructorDeleteMarkerPrimary() {
-        return "";
+        return "התחרטת? לא נורא";
     }
 
     @Override
     public String instructorDeleteMarkerSecondary() {
-        return "While the the clue marker is selected, you can delete it by clicking the trash icon";
+        return "לאחר לחיצה על מקום החידה השמורה ניתן למחוק אותה בלחיצה על הפח";
     }
 
     @Override
     public String instructorLocatePrimary() {
-        return "lost?";
+        return "אבוד?";
     }
 
     @Override
     public String instructorLocateSecondary() {
-        return "Find your current location here";
+        return "מצא את מיקומך הנוכחי";
     }
 
     @Override
     public String instructorStartGamePrimary() {
-        return "Ready to go?";
+        return "הכל מוכן?";
     }
 
     @Override
     public String instructorStartGameSecondary() {
-        return "The play button will generate a new unique code. Copy and send it to the player";
+        return "כפתור השמירה יפיק לך קוד יחודי למשחק שלך. העתק והעבר אותו לשחקנים";
     }
 
     @Override
     public String playerRiddlePrimary() {
-        return "Welcome mighty treasure hunters!";
+        return "ברוכים הבאים מחפשי מטמון!";
     }
 
     @Override
     public String playerRiddleSecondary() {
-        return "Here you can watch a clue to your next location";
+        return "כאן תוכלו לראות את החידה לנקודה הבאה במסלול";
     }
 
     @Override
     public String playerLocationVerifyPrimary() {
-        return "Got to the location?";
+        return "חושבים שהגעתם ליעד?";
     }
 
     @Override
     public String playerLocationVerifySecondary() {
-        return "Click here to check it out!";
+        return "לחצו כאן בכדי לבדוק!";
     }
 
     @Override
     public String playerLocatePrimary() {
-        return "Lost?";
+        return "אבודים?";
     }
 
     @Override
     public String playerLocateSecondary() {
-        return "Find your current location here";
+        return "מצאו את מיקומכם הנוכחי";
     }
 
     @Override
     public String gameSavedSuccessfully() {
-        return "Game saved successfully!";
+        return "המשחק נשמר בהצלחה!";
     }
 
     @Override
     public String tryAgain() {
-        return "Something happened. Please try again";
+        return "משהו קרה. נסו שנית";
     }
 
     @Override
     public String allowGpsTitle() {
-        return "Welcome!";
+        return "ברוכים הבאים!";
     }
 
     @Override
     public String allowGpsContent() {
-        return "This app is GPS based. Please approve the usage of location services on the following message";
+        return "האפליקציה מבוססת על שימוש בנתוני GPS. נא אשרו את השימוש בהם בהודעה העוקבת";
     }
 }

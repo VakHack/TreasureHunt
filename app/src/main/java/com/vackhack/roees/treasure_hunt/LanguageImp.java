@@ -1,4 +1,4 @@
-package com.vackhack.roees.treasurehunt;
+package com.vackhack.roees.treasure_hunt;
 
 public abstract interface LanguageImp {
     public String createGame();

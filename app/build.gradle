@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.vakhack.roees.treasurehunt"
+        applicationId "com.vakhack.roees.treasure_hunt"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 3
